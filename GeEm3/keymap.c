@@ -643,14 +643,16 @@ void leader_end_user(void) {
     if (did_match) {
         // Flash Green for success
         rgb_matrix_set_color_all(0x00, 0xFF, 0x00);
+        rgb_matrix_update_pwm_buffers();
 
         // This creates a tiny "pause" so you actually see the green
         // before the keyboard reverts to your normal layer colors.
-        wait_ms(500);
+        wait_ms(333);
     } else {
         // Optional: Flash Red if you messed up the sequence
         rgb_matrix_set_color_all(0xFF, 0x00, 0x00);
-        wait_ms(500);
+        rgb_matrix_update_pwm_buffers();
+        wait_ms(333);
     }
 
     rgb_matrix_mode(last_rgb_mode);
