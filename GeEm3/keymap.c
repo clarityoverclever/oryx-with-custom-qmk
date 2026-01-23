@@ -588,9 +588,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 static uint8_t last_rgb_mode;
 
 void leader_start_user(void) {
+    // Save the current mode
     last_rgb_mode = rgb_matrix_get_mode();
-    rgb_matrix_mode_noanim(RGB_MATRIX_SOLID_COLOR)
-    rgb_matrix_set_color_all(0x00, 0xFF, 0xFF);
+
+    // Change to Solid Color mode - Note the 'mode' name and the semicolon
+    rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
+    rgb_matrix_set_color_all(0x00, 0xFF, 0xFF); // Cyan
 }
 
 void leader_end_user(void) {
@@ -650,5 +653,5 @@ void leader_end_user(void) {
         wait_ms(150);
     }
 
-    rgb_matrix_mode_noanim(last_rgb_mode);
+    rgb_matrix_mode(last_rgb_mode);
 }
