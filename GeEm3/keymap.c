@@ -53,15 +53,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                     LT(1, KC_TAB),  QK_LEAD,                                       KC_SPACE,       TD(DANCE_0)
   ),
   [1] = LAYOUT_voyager(
-    MT(MOD_LGUI, KC_ESCAPE),KC_F1,          KC_F2,          KC_F3,          KC_F4,          TD(DANCE_1),                                    KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         TD(DANCE_5),    
-    QK_LLCK,        KC_INSERT,      ST_MACRO_0,     ST_MACRO_1,     ST_MACRO_2,     TD(DANCE_2),                                    KC_RPRN,        KC_NO,          ST_MACRO_8,     KC_UP,          LSFT(KC_SCLN),  KC_NO,          
-    KC_LEFT_SHIFT,  KC_DELETE,      ST_MACRO_3,     ST_MACRO_4,     KC_HOME,        TD(DANCE_3),                                    KC_RCBR,        TD(DANCE_6),    KC_LEFT,        KC_DOWN,        KC_RIGHT,       TD(DANCE_7),    
-    KC_LEFT_CTRL,   KC_LEFT_ALT,    ST_MACRO_5,     ST_MACRO_6,     ST_MACRO_7,     TD(DANCE_4),                                    TD(DANCE_8),    ST_MACRO_9,     ST_MACRO_10,    ST_MACRO_11,    ST_MACRO_12,    KC_ENTER,       
+    MT(MOD_LGUI, KC_ESCAPE),KC_F1,          KC_F2,          KC_F3,          KC_F4,          TD(DANCE_1),                                    KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         TD(DANCE_5),
+    QK_LLCK,        KC_INSERT,      ST_MACRO_0,     ST_MACRO_1,     ST_MACRO_2,     TD(DANCE_2),                                    KC_RPRN,        KC_NO,          ST_MACRO_8,     KC_UP,          LSFT(KC_SCLN),  KC_NO,
+    KC_LEFT_SHIFT,  KC_DELETE,      ST_MACRO_3,     ST_MACRO_4,     KC_HOME,        TD(DANCE_3),                                    KC_RCBR,        TD(DANCE_6),    KC_LEFT,        KC_DOWN,        KC_RIGHT,       TD(DANCE_7),
+    KC_LEFT_CTRL,   KC_LEFT_ALT,    ST_MACRO_5,     ST_MACRO_6,     ST_MACRO_7,     TD(DANCE_4),                                    TD(DANCE_8),    ST_MACRO_9,     ST_MACRO_10,    ST_MACRO_11,    ST_MACRO_12,    KC_ENTER,
                                                     KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [2] = LAYOUT_voyager(
     RGB_TOG,        TOGGLE_LAYER_COLOR,RGB_MODE_FORWARD,HSV_168_255_255,RGB_VAD,        RGB_VAI,                                        KC_MS_JIGGLER_TOGGLE,KC_NO,          KC_KP_SLASH,    KC_KP_ASTERISK, KC_KP_MINUS,    KC_KP_PLUS,
-    QK_LLCK,        LALT(LCTL(LSFT(KC_0))),KC_AUDIO_VOL_DOWN,KC_AUDIO_VOL_UP,KC_AUDIO_MUTE,  LALT(LCTL(LSFT(KC_1))),                                KC_NO,          KC_NO,          KC_KP_7,        KC_KP_8,        KC_KP_9,        KC_KP_COMMA,    
+    QK_LLCK,        LALT(LCTL(LSFT(KC_0))),KC_AUDIO_VOL_DOWN,KC_AUDIO_VOL_UP,KC_AUDIO_MUTE,  LALT(LCTL(LSFT(KC_1))),                                KC_NO,          KC_NO,          KC_KP_7,        KC_KP_8,        KC_KP_9,        KC_KP_COMMA,
     KC_LEFT_SHIFT,  KC_MEDIA_PREV_TRACK,KC_MEDIA_NEXT_TRACK,KC_MEDIA_STOP,  KC_MEDIA_PLAY_PAUSE,LALT(LCTL(LSFT(KC_2))),                                KC_PSCR,        KC_NO,          KC_KP_4,        KC_KP_5,        KC_KP_6,        KC_EQUAL,
     KC_LEFT_CTRL,   KC_LEFT_ALT,    KC_NO,          KC_NO,          KC_NO,          KC_NO,                                          KC_NO,          KC_KP_0,        KC_KP_1,        KC_KP_2,        KC_KP_3,        KC_ENTER,
                                                     KC_DOT,         KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT
@@ -731,19 +731,20 @@ void matrix_scan_user(void) {
     if (leader_sequence_active()) {
         rgb_matrix_set_color_all(5, 5, 5);
 
-        uint8_t size = leader_sequence_size();
+        extern uint16_t leader_buffer[LEADER_MAX_LENGTH];
+        extern uint8_t  leader_sequence_count;
 
-        switch (size) {
+        switch (leader_sequence_count) {
             case 0:
                 // Just pressed Leader. Show first-level options.
                 // Light up 'G' (Git) and 'Q' (Quit/Clear)
-                rgb_matrix_set_color(17, 0, 255, 255); // Cyan
-                rgb_matrix_set_color(7, 0, 255, 255);
+                rgb_matrix_set_color(17, 0, 255, 255); // G
+                rgb_matrix_set_color(7, 0, 255, 255); // Q
                 break;
 
             case 1:
                 // One key pressed. What's next?
-                if (leader_sequence_get_item(0) == KC_G) {
+                if (leader_buffer[0] == KC_G) {
                     // Show all Git sub-options: D, U, I, N, B, S, A, C
                     rgb_matrix_set_color(17, 75, 200, 75); // g
                     rgb_matrix_set_color(15, 75, 200, 75); // s
@@ -755,7 +756,7 @@ void matrix_scan_user(void) {
                     rgb_matrix_set_color(35, 75, 200, 75); // u
                     rgb_matrix_set_color(22, 75, 200, 75); // d
                 }
-                else if (leader_sequence_get_item(0) == KC_Q) {
+                else if (leader_buffer[0] == KC_Q) {
                     // Show the second 'Q' for the QQ combo
                     rgb_matrix_set_color(7, 200, 75, 75);
                 }
