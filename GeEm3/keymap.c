@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
+#include "process_leader.h"
 #define MOON_LED_LEVEL LED_LEVEL
 #ifndef ZSA_SAFE_RANGE
 #define ZSA_SAFE_RANGE SAFE_RANGE
@@ -731,7 +732,7 @@ void matrix_scan_user(void) {
     if (leader_sequence_active()) {
         rgb_matrix_set_color_all(5, 5, 5);
 
-        extern uint16_t leader_buffer[LEADER_MAX_LENGTH];
+        extern uint16_t leader_buffer[];
         extern uint8_t  leader_sequence_count;
 
         switch (leader_sequence_count) {
