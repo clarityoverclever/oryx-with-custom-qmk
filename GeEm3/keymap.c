@@ -1,6 +1,7 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
 #include "process_leader.h"
+#include "math.h"
 #define MOON_LED_LEVEL LED_LEVEL
 #ifndef ZSA_SAFE_RANGE
 #define ZSA_SAFE_RANGE SAFE_RANGE
@@ -751,42 +752,54 @@ void leader_end_user(void) {
 
 void matrix_scan_user(void) {
     if (leader_sequence_active()) {
-        rgb_matrix_set_color_all(10, 10, 10);
+        // Calculate pulse: oscillates roughly every 1.5 seconds
+        // scaled to a range of 0.4 to 1.0 so keys don't go fully dark
+        float pulse = 0.7 + 0.3 * sin(g_rgb_timer * 0.005);
+
+        // Base background remains static and dim
+        rgb_matrix_set_color_all(5, 5, 5);
 
         switch (leader_step) {
             case 0:
-                // Just pressed Leader. Show first-level options.
-                // Light up 'G' (Git) and 'Q' (Quit/Clear)
-                rgb_matrix_set_color(17, 0, 23, 255); // G
-                rgb_matrix_set_color(7, 0, 23, 255); // Q
+                // Pulsing Blue for First Level
+                rgb_matrix_set_color(17, 0, 23 * pulse, 255 * pulse); // G
+                rgb_matrix_set_color(7, 0, 23 * pulse, 255 * pulse);  // Q
                 break;
 
             case 1:
-                // One key pressed
                 if (first_leader_key == KC_G) {
-                    // Show all Git sub-options: P, I, N, B, S, A, C
-                    rgb_matrix_set_color(17, 15, 230, 44); // g
-                    rgb_matrix_set_color(15, 15, 230, 44); // s
-                    rgb_matrix_set_color(13, 15, 230, 44); // a
-                    rgb_matrix_set_color(11, 15, 230, 44); // b
-                    rgb_matrix_set_color(40, 15, 230, 44); // n
-                    rgb_matrix_set_color(42, 15, 230, 44); // i
-                    rgb_matrix_set_color(10, 15, 230, 44); // p
-                    rgb_matrix_set_color(21, 15, 230, 44); // c
-                }
-                else if (first_leader_key == KC_Q) {
-                    // Show the second 'Q' for the QQ combo
-                    rgb_matrix_set_color(7, 255, 13, 49);
+                    rgb_matrix_set_color(17, 0, 23, 255); // Solid Blue (Selected)
+
+                    // Pulsing Green for Git options
+                    uint8_t g = 230 * pulse;
+                    uint8_t b = 44 * pulse;
+                    rgb_matrix_set_color(15, 15, g, b); // s
+                    rgb_matrix_set_color(13, 15, g, b); // a
+                    rgb_matrix_set_color(11, 15, g, b); // b
+                    rgb_matrix_set_color(39, 15, g, b); // n
+                    rgb_matrix_set_color(41, 15, g, b); // i
+                    rgb_matrix_set_color(10, 15, g, b); // p
+                    rgb_matrix_set_color(21, 15, g, b); // c
                 }
                 break;
-            case 2: // Two keys have been pressed
-                if (first_leader_key == KC_G && second_leader_key == KC_P) {
-                    rgb_matrix_set_color(35, 15, 230, 44); // u
-                    rgb_matrix_set_color(22, 15, 230, 44); // d
-                }
-                else if (first_leader_key == KC_G && second_leader_key == KC_C) {
-                    rgb_matrix_set_color(38, 15, 230, 44); // m
-                    rgb_matrix_set_color(21, 15, 230, 44); // c
+
+            case 2:
+                if (first_leader_key == KC_G) {
+                    rgb_matrix_set_color(17, 0, 23, 255); // Solid G
+
+                    uint8_t g = 230 * pulse;
+                    uint8_t b = 44 * pulse;
+
+                    if (second_leader_key == KC_P) {
+                        rgb_matrix_set_color(10, 0, 23, 255); // Solid P
+                        rgb_matrix_set_color(35, 15, g, b);   // Pulse U
+                        rgb_matrix_set_color(22, 15, g, b);   // Pulse D
+                    }
+                    else if (second_leader_key == KC_C) {
+                        rgb_matrix_set_color(21, 0, 23, 255); // Solid C
+                        rgb_matrix_set_color(38, 15, g, b);   // Pulse M
+                        rgb_matrix_set_color(21, 15, g, b);   // Pulse C (for CC)
+                    }
                 }
                 break;
         }
