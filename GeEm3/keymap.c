@@ -50,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     CW_TOGG,        KC_Q,           KC_W,           KC_F,           KC_P,           KC_B,                                           KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSLS,
     KC_LEFT_SHIFT,  KC_A,           KC_R,           KC_S,           KC_T,           KC_G,                                           KC_M,           KC_N,           KC_E,           KC_I,           KC_O,           MT(MOD_RSFT, KC_QUOTE),
     KC_LEFT_CTRL,   MT(MOD_LALT, KC_Z),KC_X,        KC_C,           KC_D,           KC_V,                                           KC_K,           KC_H,           KC_COMMA,       KC_DOT,         MT(MOD_RALT, KC_SLASH),KC_ENTER,
-                                                    LT(1, KC_TAB),  QK_LEAD,                                       KC_SPACE,       TD(DANCE_0)
+                                                    LT(1, KC_TAB),  QK_LEAD,                                       KC_SPACE,       TD(DANCE_1)
   ),
   [1] = LAYOUT_voyager(
     MT(MOD_LGUI, KC_ESCAPE),KC_F1,          KC_F2,          KC_F3,          KC_F4,          TD(DANCE_2),                                    KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         TD(DANCE_6),
@@ -809,6 +809,9 @@ void matrix_scan_user(void) {
                     rgb_matrix_set_color(10, 15, 230, 44); // p
                     rgb_matrix_set_color(21, 15, 230, 44); // c
                 }
+                else if (first_leader_key == KC_Q) {
+                    rgb_matrix_set_color(7, 255, 0, 0);  // Q RED (Selected)
+                }
                 break;
 
             case 2:
@@ -818,12 +821,10 @@ void matrix_scan_user(void) {
                     if (second_leader_key == KC_P) {
                         rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
-                        rgb_matrix_set_color(35, 15, 230, 44);  // U
+                        rgb_matrix_set_color(34, 15, 230, 44);  // U
                         rgb_matrix_set_color(22, 15, 230, 44); // D
                     }
                     else if (second_leader_key == KC_C) {
-                        rgb_matrix_set_color(21, 0, 23, 255);  // C Blue (Selected)
-
                         rgb_matrix_set_color(38, 15, 230, 44); // M
                         rgb_matrix_set_color(21, 15, 230, 44); // C (for CC)
                     }
