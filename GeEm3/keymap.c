@@ -740,7 +740,7 @@ void leader_end_user(void) {
         wait_ms(150);
     } else {
         // Flash Red for failure
-        rgb_matrix_set_color_all(255, 13, 49);
+        rgb_matrix_set_color_all(255, 0, 0);
         rgb_matrix_update_pwm_buffers();
 
         wait_ms(150);
