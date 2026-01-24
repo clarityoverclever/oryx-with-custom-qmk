@@ -4,7 +4,11 @@
 #define LEADER_TIMEOUT 500
 
 #define USB_SUSPEND_WAKEUP_DELAY 0
+<<<<<<< Updated upstream
 #define SERIAL_NUMBER "GeEm3/aNZb5O"
+=======
+#define SERIAL_NUMBER "GeEm3/v69zRR"
+>>>>>>> Stashed changes
 #define LAYER_STATE_8BIT
 
 #define POINTING_DEVICE_HIRES_SCROLL_ENABLE
