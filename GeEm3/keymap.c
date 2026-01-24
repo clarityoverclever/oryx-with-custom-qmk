@@ -76,10 +76,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 
-
-
-
-
 extern rgb_config_t rgb_matrix_config;
 
 RGB hsv_to_rgb_with_value(HSV hsv) {
@@ -521,6 +517,15 @@ tap_dance_action_t tap_dance_actions[] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (leader_sequence_active() && record->event.pressed) {
+        if (leader_step == 0) {
+            first_leader_key = keycode;
+            leader_step = 1;
+        } else if (leader_step == 1) {
+            leader_step = 2;
+        }
+    }
+
   switch (keycode) {
   case QK_MODS ... QK_MODS_MAX:
     // Mouse keys with modifiers work inconsistently across operating systems, this makes sure that modifiers are always
@@ -656,11 +661,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 
+static uint8_t leader_step = 0;
+static uint16_t first_leader_key = 0;
 static uint8_t last_rgb_mode;
 
 void leader_start_user(void) {
     // Save the current mode
     last_rgb_mode = rgb_matrix_get_mode();
+
+    leader_step = 0;
+    first_leader_key = 0;
 
     // Change to listen mode
     rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
@@ -669,6 +679,7 @@ void leader_start_user(void) {
 
 void leader_end_user(void) {
     bool did_match = false;
+    leader_step = 0; // reset leader tracker
 
     if (leader_sequence_two_keys(KC_Q, KC_Q)) {
         // Sends Ctrl+C to kill any hung process, then clears terminal
@@ -713,13 +724,13 @@ void leader_end_user(void) {
     // --- Visual Feedback Logic ---
     if (did_match) {
         // Flash Green for success
-        rgb_matrix_set_color_all(0x00, 0xFF, 0x00);
+        rgb_matrix_set_color_all(75, 200, 75);
         rgb_matrix_update_pwm_buffers();
 
         wait_ms(150);
     } else {
         // Flash Red for failure
-        rgb_matrix_set_color_all(0xFF, 0x00, 0x00);
+        rgb_matrix_set_color_all(200, 75, 75);
         rgb_matrix_update_pwm_buffers();
 
         wait_ms(150);
@@ -732,10 +743,7 @@ void matrix_scan_user(void) {
     if (leader_sequence_active()) {
         rgb_matrix_set_color_all(5, 5, 5);
 
-        extern uint16_t leader_buffer[];
-        extern uint8_t  leader_sequence_count;
-
-        switch (leader_sequence_count) {
+        switch (leader_step) {
             case 0:
                 // Just pressed Leader. Show first-level options.
                 // Light up 'G' (Git) and 'Q' (Quit/Clear)
@@ -745,7 +753,7 @@ void matrix_scan_user(void) {
 
             case 1:
                 // One key pressed. What's next?
-                if (leader_buffer[0] == KC_G) {
+                if (first_leader_key == KC_G) {
                     // Show all Git sub-options: D, U, I, N, B, S, A, C
                     rgb_matrix_set_color(17, 75, 200, 75); // g
                     rgb_matrix_set_color(15, 75, 200, 75); // s
@@ -757,7 +765,7 @@ void matrix_scan_user(void) {
                     rgb_matrix_set_color(35, 75, 200, 75); // u
                     rgb_matrix_set_color(22, 75, 200, 75); // d
                 }
-                else if (leader_buffer[0] == KC_Q) {
+                else if (first_leader_key == KC_Q) {
                     // Show the second 'Q' for the QQ combo
                     rgb_matrix_set_color(7, 200, 75, 75);
                 }
