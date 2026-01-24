@@ -818,7 +818,7 @@ void matrix_scan_user(void) {
                     if (second_leader_key == KC_P) {
                         rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
-                        rgb_matrix_set_color(35, 15, 230, 44;  // U
+                        rgb_matrix_set_color(35, 15, 230, 44);  // U
                         rgb_matrix_set_color(22, 15, 230, 44); // D
                     }
                     else if (second_leader_key == KC_C) {
