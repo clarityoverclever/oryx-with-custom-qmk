@@ -30,8 +30,6 @@ enum custom_keycodes {
   NAVIGATOR_AIM
 };
 
-
-
 enum tap_dance_codes {
   DANCE_0,
   DANCE_1,
