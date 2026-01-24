@@ -721,12 +721,12 @@ void leader_end_user(void) {
     leader_step = 0; // reset leader tracker
 
     // three key sequences
-    if (leader_sequence_three_keys(KC_G, KC_C, KC_M)) {
-        SEND_STRING("git commit -m \"\"" SS_TAP(X_LEFT));
+    if (leader_sequence_three_keys(KC_G, KC_C, KC_C)) {
+        SEND_STRING("git commit\n");
         did_match = true;
     }
-    else if (leader_sequence_three_keys(KC_G, KC_C, KC_C)) {
-        SEND_STRING("git commit\n");
+    else if (leader_sequence_three_keys(KC_G, KC_C, KC_M)) {
+        SEND_STRING("git commit -m \"\"" SS_TAP(X_LEFT));
         did_match = true;
     }
     else if (leader_sequence_three_keys(KC_G, KC_P, KC_D)) {
@@ -735,6 +735,30 @@ void leader_end_user(void) {
     }
     else if (leader_sequence_three_keys(KC_G, KC_P, KC_U)) {
         SEND_STRING("git push\n");
+        did_match = true;
+    }
+    else if (leader_sequence_two_keys(KC_G, KC_S, KC_T)) {
+        SEND_STRING("git status -sb\n");
+        did_match = true;
+    }
+    else if (leader_sequence_two_keys(KC_G, KC_S, KC_I)) {
+        SEND_STRING("git stash push -m \"wip\"\n");
+        did_match = true;
+    }
+    else if (leader_sequence_two_keys(KC_G, KC_S, KC_O)) {
+        SEND_STRING("git stash pop\n");
+        did_match = true;
+    }
+    else if (leader_sequence_two_keys(KC_G, KC_B, KC_R)) {
+        SEND_STRING("git branch\n");
+        did_match = true;
+    }
+    else if (leader_sequence_two_keys(KC_G, KC_B, KC_N)) {
+        SEND_STRING("git checkout -b ");
+        did_match = true;
+    }
+    else if (leader_sequence_two_keys(KC_G, KC_B, KC_C)) {
+        SEND_STRING("git checkout ");
         did_match = true;
     }
 
@@ -748,22 +772,12 @@ void leader_end_user(void) {
         SEND_STRING("git init\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_N)) {
-        // Prepare for a new branch name
-        SEND_STRING("git checkout -b ");
-        did_match = true;
-    }
-    else if (leader_sequence_two_keys(KC_G, KC_B)) {
-        // Prepare to switch branches
-        SEND_STRING("git checkout ");
-        did_match = true;
-    }
-    else if (leader_sequence_two_keys(KC_G, KC_S)) {
-        SEND_STRING("git status\n");
-        did_match = true;
-    }
     else if (leader_sequence_two_keys(KC_G, KC_A)) {
         SEND_STRING("git add .\n");
+        did_match = true;
+    }
+    else if (leader_sequence_two_keys(KC_G, KC_L)) {
+        SEND_STRING("git log --graph --oneline --decorate --all\n");
         did_match = true;
     }
 
@@ -792,7 +806,7 @@ void matrix_scan_user(void) {
 
         switch (leader_step) {
             case 0:
-                // Pulsing Blue for First Level
+                // Blue for First Level
                 rgb_matrix_set_color(17, 0, 23, 255); // G
                 rgb_matrix_set_color(7, 0, 23, 255);  // Q
                 break;
@@ -801,13 +815,13 @@ void matrix_scan_user(void) {
                 if (first_leader_key == KC_G) {
                     rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
 
-                    rgb_matrix_set_color(15, 15, 230, 44); // s
-                    rgb_matrix_set_color(13, 15, 230, 44); // a
-                    rgb_matrix_set_color(11, 15, 230, 44); // b
-                    rgb_matrix_set_color(39, 15, 230, 44); // n
-                    rgb_matrix_set_color(41, 15, 230, 44); // i
-                    rgb_matrix_set_color(10, 15, 230, 44); // p
-                    rgb_matrix_set_color(21, 15, 230, 44); // c
+                    rgb_matrix_set_color(15, 15, 230, 44); // S
+                    rgb_matrix_set_color(11, 15, 230, 44); // B
+                    rgb_matrix_set_color(10, 15, 230, 44); // P
+                    rgb_matrix_set_color(21, 15, 230, 44); // C
+                    rgb_matrix_set_color(13, 15, 230, 44); // A
+                    rgb_matrix_set_color(41, 15, 230, 44); // I
+                    rgb_matrix_set_color(33, 15, 230, 44); // L
                 }
                 else if (first_leader_key == KC_Q) {
                     rgb_matrix_set_color(7, 255, 0, 0);  // Q RED (Selected)
@@ -821,15 +835,29 @@ void matrix_scan_user(void) {
                     if (second_leader_key == KC_P) {
                         rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
-                        rgb_matrix_set_color(34, 15, 230, 44);  // U
+                        rgb_matrix_set_color(34, 15, 230, 44); // U
                         rgb_matrix_set_color(22, 15, 230, 44); // D
                     }
                     else if (second_leader_key == KC_C) {
-                        rgb_matrix_set_color(38, 15, 230, 44); // M
                         rgb_matrix_set_color(21, 15, 230, 44); // C (for CC)
+                        rgb_matrix_set_color(38, 15, 230, 44); // M
+                    }
+                    else if (second_leader_key == KC_B) {
+                        rgb_matrix_set_color(11, 0, 23, 255); // B Blue (Selected)
+
+                        rgb_matrix_set_color(14, 15, 230, 44); // R
+                        rgb_matrix_set_color(39, 15, 230, 44); // N
+                        rgb_matrix_set_color(21, 15, 230, 44); // C
+                    }
+                    else if (second_leader_key == KC_S) {
+                        rgb_matrix_set_color(15, 0, 23, 255); // S Blue (Selected)
+
+                        rgb_matrix_set_color(16, 15, 230, 44); // T
+                        rgb_matrix_set_color(41, 15, 230, 44); // I
+                        rgb_matrix_set_color(42, 15, 230, 44); // O
                     }
                 }
                 break;
         }
     }
-}
+}gpg
