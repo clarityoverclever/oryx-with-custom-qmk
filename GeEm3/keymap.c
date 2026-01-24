@@ -78,6 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 static uint8_t leader_step = 0;
 static uint16_t first_leader_key = 0;
+static uint16_t second_leader_key = 0;
 static uint8_t last_rgb_mode;
 
 extern rgb_config_t rgb_matrix_config;
@@ -527,6 +528,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             leader_step = 1;
         } else if (leader_step == 1) {
             leader_step = 2;
+        }else if (leader_step == 2) {
+                leader_step = 3;
         }
     }
 
@@ -674,24 +677,35 @@ void leader_start_user(void) {
 
     // Change to listen mode
     rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
-    rgb_matrix_set_color_all(100, 100, 100); // Low white/dim background
+    rgb_matrix_set_color_all(10, 10, 10); // Low white/dim background
 }
 
 void leader_end_user(void) {
     bool did_match = false;
     leader_step = 0; // reset leader tracker
 
-    if (leader_sequence_two_keys(KC_Q, KC_Q)) {
-        // Sends Ctrl+C to kill any hung process, then clears terminal
-        SEND_STRING(SS_LCTL("c") "clear\n");
+    // three key sequences
+    if (leader_sequence_three_keys(KC_G, KC_C, KC_M)) {
+        SEND_STRING("git commit -m \"\"" SS_TAP(X_LEFT));
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_D)) {
+    else if (leader_sequence_three_keys(KC_G, KC_C, KC_C)) {
+        SEND_STRING("git commit\n");
+        did_match = true;
+    }
+    else if (leader_sequence_three_keys(KC_G, KC_P, KC_D)) {
         SEND_STRING("git pull\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_U)) {
+    else if (leader_sequence_three_keys(KC_G, KC_P, KC_U)) {
         SEND_STRING("git push\n");
+        did_match = true;
+    }
+
+    // two key sequences
+    else if (leader_sequence_two_keys(KC_Q, KC_Q)) {
+        // Sends Ctrl+C to kill any hung process, then clears terminal
+        SEND_STRING(SS_LCTL("c") "clear\n");
         did_match = true;
     }
     else if (leader_sequence_two_keys(KC_G, KC_I)) {
@@ -716,21 +730,17 @@ void leader_end_user(void) {
         SEND_STRING("git add .\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_C)) {
-        SEND_STRING("git commit\n");
-        did_match = true;
-    }
 
     // --- Visual Feedback Logic ---
     if (did_match) {
         // Flash Green for success
-        rgb_matrix_set_color_all(75, 200, 75);
+        rgb_matrix_set_color_all(15, 230, 44);
         rgb_matrix_update_pwm_buffers();
 
         wait_ms(150);
     } else {
         // Flash Red for failure
-        rgb_matrix_set_color_all(200, 75, 75);
+        rgb_matrix_set_color_all(255, 13, 49);
         rgb_matrix_update_pwm_buffers();
 
         wait_ms(150);
@@ -741,34 +751,42 @@ void leader_end_user(void) {
 
 void matrix_scan_user(void) {
     if (leader_sequence_active()) {
-        rgb_matrix_set_color_all(5, 5, 5);
+        rgb_matrix_set_color_all(10, 10, 10);
 
         switch (leader_step) {
             case 0:
                 // Just pressed Leader. Show first-level options.
                 // Light up 'G' (Git) and 'Q' (Quit/Clear)
-                rgb_matrix_set_color(17, 0, 255, 255); // G
-                rgb_matrix_set_color(7, 0, 255, 255); // Q
+                rgb_matrix_set_color(17, 0, 23, 255); // G
+                rgb_matrix_set_color(7, 0, 23, 255); // Q
                 break;
 
             case 1:
-                // One key pressed. What's next?
+                // One key pressed
                 if (first_leader_key == KC_G) {
-                    // Show all Git sub-options: D, U, I, N, B, S, A, C
-                    rgb_matrix_set_color(17, 75, 200, 75); // g
-                    rgb_matrix_set_color(15, 75, 200, 75); // s
-                    rgb_matrix_set_color(13, 75, 200, 75); // a
-                    rgb_matrix_set_color(21, 75, 200, 75); // c
-                    rgb_matrix_set_color(11, 75, 200, 75); // b
-                    rgb_matrix_set_color(40, 75, 200, 75); // n
-                    rgb_matrix_set_color(42, 75, 200, 75); // i
-                    rgb_matrix_set_color(35, 75, 200, 75); // u
-                    rgb_matrix_set_color(22, 75, 200, 75); // d
+                    // Show all Git sub-options: P, I, N, B, S, A, C
+                    rgb_matrix_set_color(17, 15, 230, 44); // g
+                    rgb_matrix_set_color(15, 15, 230, 44); // s
+                    rgb_matrix_set_color(13, 15, 230, 44); // a
+                    rgb_matrix_set_color(11, 15, 230, 44); // b
+                    rgb_matrix_set_color(40, 15, 230, 44); // n
+                    rgb_matrix_set_color(42, 15, 230, 44); // i
+                    rgb_matrix_set_color(10, 15, 230, 44); // p
+                    rgb_matrix_set_color(21, 15, 230, 44); // c
                 }
                 else if (first_leader_key == KC_Q) {
                     // Show the second 'Q' for the QQ combo
-                    rgb_matrix_set_color(7, 200, 75, 75);
+                    rgb_matrix_set_color(7, 255, 13, 49);
                 }
+                break;
+            case 2: // Two keys have been pressed
+                if (first_leader_key == KC_G && second_leader_key == KC_P) {
+                    rgb_matrix_set_color(35, 15, 230, 44); // u
+                    rgb_matrix_set_color(22, 15, 230, 44); // d
+                }
+                else if (first_leader_key == KC_G && second_leader_key == KC_C)
+                    rgb_matrix_set_color(38, 15, 230, 44); // m
+                    rgb_matrix_set_color(21, 15, 230, 44); // c
                 break;
         }
     }
