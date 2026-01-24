@@ -793,8 +793,8 @@ void matrix_scan_user(void) {
         switch (leader_step) {
             case 0:
                 // Pulsing Blue for First Level
-                rgb_matrix_set_color(17, 0, 23, 255; // G
-                rgb_matrix_set_color(7, 0, 23, 255;  // Q
+                rgb_matrix_set_color(17, 0, 23, 255); // G
+                rgb_matrix_set_color(7, 0, 23, 255);  // Q
                 break;
 
             case 1:
