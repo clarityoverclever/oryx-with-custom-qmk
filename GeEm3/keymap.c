@@ -76,6 +76,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 
+static uint8_t leader_step = 0;
+static uint16_t first_leader_key = 0;
+static uint8_t last_rgb_mode;
+
 extern rgb_config_t rgb_matrix_config;
 
 RGB hsv_to_rgb_with_value(HSV hsv) {
@@ -660,10 +664,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
   return true;
 }
-
-static uint8_t leader_step = 0;
-static uint16_t first_leader_key = 0;
-static uint8_t last_rgb_mode;
 
 void leader_start_user(void) {
     // Save the current mode
