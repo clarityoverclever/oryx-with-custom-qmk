@@ -784,7 +784,7 @@ void matrix_scan_user(void) {
                     rgb_matrix_set_color(35, 15, 230, 44); // u
                     rgb_matrix_set_color(22, 15, 230, 44); // d
                 }
-                else if (first_leader_key == KC_G && second_leader_key == KC_C)
+                else if (first_leader_key == KC_G && second_leader_key == KC_C) {
                     rgb_matrix_set_color(38, 15, 230, 44); // m
                     rgb_matrix_set_color(21, 15, 230, 44); // c
                 }
