@@ -737,27 +737,27 @@ void leader_end_user(void) {
         SEND_STRING("git push\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_S, KC_T)) {
+    else if (leader_sequence_three_keys(KC_G, KC_S, KC_T)) {
         SEND_STRING("git status -sb\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_S, KC_I)) {
+    else if (leader_sequence_three_keys(KC_G, KC_S, KC_I)) {
         SEND_STRING("git stash push -m \"wip\"\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_S, KC_O)) {
+    else if (leader_sequence_three_keys(KC_G, KC_S, KC_O)) {
         SEND_STRING("git stash pop\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_B, KC_R)) {
+    else if (leader_sequence_three_keys(KC_G, KC_B, KC_R)) {
         SEND_STRING("git branch\n");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_B, KC_N)) {
+    else if (leader_sequence_three_keys(KC_G, KC_B, KC_N)) {
         SEND_STRING("git checkout -b ");
         did_match = true;
     }
-    else if (leader_sequence_two_keys(KC_G, KC_B, KC_C)) {
+    else if (leader_sequence_three_keys(KC_G, KC_B, KC_C)) {
         SEND_STRING("git checkout ");
         did_match = true;
     }
