@@ -1,0 +1,58 @@
+// leader.h
+#pragma once
+#include "quantum.h"
+
+typedef enum {
+    CAT_NONE,
+    CAT_GIT,
+    CAT_PROGRAM,
+    CAT_QUICK,
+} leader_category_t;
+
+typedef enum {
+    ACT_NONE,
+
+    // Git actions
+    ACT_GIT_COMMIT_FULL,
+    ACT_GIT_COMMIT_SHORT,
+    ACT_GIT_PULL,
+    ACT_GIT_PUSH,
+    ACT_GIT_STATUS,
+    ACT_GIT_STASH_PUSH,
+    ACT_GIT_STASH_POP,
+    ACT_GIT_BRANCH,
+    ACT_GIT_BRANCH_NEW,
+    ACT_GIT_BRANCH_CHECKOUT,
+    ACT_GIT_INIT,
+    ACT_GIT_ADD,
+    ACT_GIT_LOG,
+
+    // Quick actions
+    ACT_QUICK_KILL_CLEAR,
+
+} leader_action_t;
+
+// Leader sequence structure
+typedef struct {
+    uint16_t key1;          // First key (0 for unused)
+    uint16_t key2;          // Second key (0 for unused)
+    uint16_t key3;          // Third key (0 for unused)
+    leader_action_t action;
+    const char* output;     // String to send
+} leader_sequence_t;
+
+// Global state tracking
+typedef struct {
+    uint8_t step;           // Current step in sequence (0, 1, 2, 3)
+    uint16_t first_key;     // First leader key pressed
+    uint16_t second_key;    // Second leader key pressed
+    uint8_t last_rgb_mode;  // Saved RGB mode
+} leader_state_t;
+
+// Function declarations
+void leader_start_logic(void);
+void leader_end_logic(void);
+void leader_visual_logic(void);
+
+// State accessor (defined in leader.c)
+leader_state_t* get_leader_state(void);

@@ -2,6 +2,7 @@
 #include "version.h"
 #include "i18n.h"
 #include "process_leader.h"
+#include "leader.h"
 #define MOON_LED_LEVEL LED_LEVEL
 #ifndef ZSA_SAFE_RANGE
 #define ZSA_SAFE_RANGE SAFE_RANGE
@@ -81,11 +82,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                     KC_TRANSPARENT, KC_NO,                                          KC_TRANSPARENT, KC_TRANSPARENT
   ),
 };
-
-static uint8_t leader_step = 0;
-static uint16_t first_leader_key = 0;
-static uint16_t second_leader_key = 0;
-static uint8_t last_rgb_mode;
 
 extern rgb_config_t rgb_matrix_config;
 
@@ -743,14 +739,15 @@ tap_dance_action_t tap_dance_actions[] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (leader_sequence_active() && record->event.pressed) {
-        if (leader_step == 0) {
-            first_leader_key = keycode;
-            leader_step = 1;
-        } else if (leader_step == 1) {
-            second_leader_key = keycode;
-            leader_step = 2;
-        }else if (leader_step == 2) {
-                leader_step = 3;
+        leader_state_t* state = get_leader_state();
+        if (state->step == 0) {
+            state->first_key = keycode;
+            state->step = 1;
+        } else if (state->step == 1) {
+            state->second_key = keycode;
+            state->step = 2;
+        } else if (state->step == 2) {
+            state->step = 3;
         }
     }
 
@@ -895,159 +892,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 void leader_start_user(void) {
-    // Save the current mode
-    last_rgb_mode = rgb_matrix_get_mode();
-
-    leader_step = 0;
-    first_leader_key = 0;
-
-    // Change to listen mode
-    rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
-    rgb_matrix_set_color_all(10, 10, 10); // Low white/dim background
+    leader_start_logic();
 }
 
 void leader_end_user(void) {
-    bool did_match = false;
-    leader_step = 0; // reset leader tracker
-
-    // three key sequences
-    if (leader_sequence_three_keys(KC_G, KC_C, KC_C)) {
-        SEND_STRING("git commit\n");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_C, KC_M)) {
-        SEND_STRING("git commit -m \"\"" SS_TAP(X_LEFT));
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_P, KC_D)) {
-        SEND_STRING("git pull\n");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_P, KC_U)) {
-        SEND_STRING("git push\n");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_S, KC_T)) {
-        SEND_STRING("git status -sb\n");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_S, KC_I)) {
-        SEND_STRING("git stash push -m \"wip\"\n");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_S, KC_O)) {
-        SEND_STRING("git stash pop\n");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_B, KC_R)) {
-        SEND_STRING("git branch\n");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_B, KC_N)) {
-        SEND_STRING("git checkout -b ");
-        did_match = true;
-    }
-    else if (leader_sequence_three_keys(KC_G, KC_B, KC_C)) {
-        SEND_STRING("git checkout ");
-        did_match = true;
-    }
-
-    // two key sequences
-    else if (leader_sequence_two_keys(KC_Q, KC_Q)) {
-        // Sends Ctrl+C to kill any hung process, then clears terminal
-        SEND_STRING(SS_LCTL("c") "clear\n");
-        did_match = true;
-    }
-    else if (leader_sequence_two_keys(KC_G, KC_I)) {
-        SEND_STRING("git init\n");
-        did_match = true;
-    }
-    else if (leader_sequence_two_keys(KC_G, KC_A)) {
-        SEND_STRING("git add .\n");
-        did_match = true;
-    }
-    else if (leader_sequence_two_keys(KC_G, KC_L)) {
-        SEND_STRING("git log --graph --oneline --decorate --all\n");
-        did_match = true;
-    }
-
-    // --- Visual Feedback Logic ---
-    if (did_match) {
-        // Flash Green for success
-        rgb_matrix_set_color_all(15, 230, 44);
-        rgb_matrix_update_pwm_buffers();
-
-        wait_ms(150);
-    } else {
-        // Flash Red for failure
-        rgb_matrix_set_color_all(255, 0, 0);
-        rgb_matrix_update_pwm_buffers();
-
-        wait_ms(150);
-    }
-
-    rgb_matrix_mode(last_rgb_mode);
+    leader_end_logic();
 }
 
 void matrix_scan_user(void) {
-    if (leader_sequence_active()) {
-        // Base background static and dim
-        rgb_matrix_set_color_all(5, 5, 5);
-
-        switch (leader_step) {
-            case 0:
-                // Blue for First Level
-                rgb_matrix_set_color(17, 0, 23, 255); // G
-                rgb_matrix_set_color(7, 0, 23, 255);  // Q
-                break;
-
-            case 1:
-                if (first_leader_key == KC_G) {
-                    rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
-
-                    rgb_matrix_set_color(15, 15, 230, 44); // S
-                    rgb_matrix_set_color(11, 15, 230, 44); // B
-                    rgb_matrix_set_color(10, 15, 230, 44); // P
-                    rgb_matrix_set_color(21, 15, 230, 44); // C
-                    rgb_matrix_set_color(13, 15, 230, 44); // A
-                    rgb_matrix_set_color(41, 15, 230, 44); // I
-                    rgb_matrix_set_color(33, 15, 230, 44); // L
-                }
-                else if (first_leader_key == KC_Q) {
-                    rgb_matrix_set_color(7, 255, 0, 0);  // Q RED (Selected)
-                }
-                break;
-
-            case 2:
-                if (first_leader_key == KC_G) {
-                    rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
-
-                    if (second_leader_key == KC_P) {
-                        rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
-
-                        rgb_matrix_set_color(34, 15, 230, 44); // U
-                        rgb_matrix_set_color(22, 15, 230, 44); // D
-                    }
-                    else if (second_leader_key == KC_C) {
-                        rgb_matrix_set_color(21, 15, 230, 44); // C (for CC)
-                        rgb_matrix_set_color(38, 15, 230, 44); // M
-                    }
-                    else if (second_leader_key == KC_B) {
-                        rgb_matrix_set_color(11, 0, 23, 255); // B Blue (Selected)
-
-                        rgb_matrix_set_color(14, 15, 230, 44); // R
-                        rgb_matrix_set_color(39, 15, 230, 44); // N
-                        rgb_matrix_set_color(21, 15, 230, 44); // C
-                    }
-                    else if (second_leader_key == KC_S) {
-                        rgb_matrix_set_color(15, 0, 23, 255); // S Blue (Selected)
-
-                        rgb_matrix_set_color(16, 15, 230, 44); // T
-                        rgb_matrix_set_color(41, 15, 230, 44); // I
-                        rgb_matrix_set_color(42, 15, 230, 44); // O
-                    }
-                }
-                break;
-        }
-    }
+    leader_visual_logic();
 }
