@@ -31,6 +31,8 @@ typedef enum {
     ACT_GIT_LOG,
 
     // Code actions
+	ACT_CODE_HASHTABLE,
+	ACT_CODE_CUSTOM_OBJ,
 
 } leader_action_t;
 

@@ -24,6 +24,9 @@ static const leader_sequence_t leader_sequences[] = {
     {KC_G, KC_B, KC_N, ACT_GIT_BRANCH_NEW,      "git checkout -b "},
     {KC_G, KC_B, KC_C, ACT_GIT_BRANCH_CHECKOUT, "git checkout "},
 
+    {KC_C, KC_P, KC_H, ACT_CODE_HASHTABLE,      "[hashtable] $"},
+    {KC_C, KC_P, KC_U, ACT_CODE_CUSTOM_OBJ,     "[PSCustomObject]@{"},
+
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
     {KC_G, KC_I, 0,    ACT_GIT_INIT,            "git init\n"},
@@ -119,12 +122,17 @@ void leader_visual_logic(void) {
     switch (leader_state.step) {
         case 0:
             // Blue for first level options
-            rgb_matrix_set_color(17, 0, 23, 255); // G
             rgb_matrix_set_color(7, 0, 23, 255);  // Q
+            rgb_matrix_set_color(17, 0, 23, 255); // G
+            rgb_matrix_set_color(21, 0, 23, 255); // C
             break;
 
         case 1:
-            if (leader_state.first_key == KC_G) {
+            if (leader_state.first_key == KC_Q) {
+                rgb_matrix_set_color(7, 255, 0, 0);  // Q Red (Selected)
+                rgb_matrix_set_color(7, 255, 0, 0);  // Q again for double-tap
+            }
+            else if (leader_state.first_key == KC_G) {
                 rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
 
                 // Green for second level git options
@@ -136,9 +144,8 @@ void leader_visual_logic(void) {
                 rgb_matrix_set_color(41, 15, 230, 44); // I
                 rgb_matrix_set_color(33, 15, 230, 44); // L
             }
-            else if (leader_state.first_key == KC_Q) {
-                rgb_matrix_set_color(7, 255, 0, 0);  // Q Red (Selected)
-                rgb_matrix_set_color(7, 255, 0, 0);  // Q again for double-tap
+            else if (leader_state.first_key == KC_C) {
+                rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
             }
             break;
 
@@ -171,6 +178,17 @@ void leader_visual_logic(void) {
                     rgb_matrix_set_color(16, 15, 230, 44); // T
                     rgb_matrix_set_color(41, 15, 230, 44); // I
                     rgb_matrix_set_color(42, 15, 230, 44); // O
+                }
+            }
+            if (leader_state.first_key == KC_C) {
+                rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
+
+                if (leader_state.second_key == KC_P) {
+                    rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
+
+
+                    rgb_matrix_set_color(45, 15, 230, 44); // H
+                    rgb_matrix_set_color(34, 15, 230, 44); // U
                 }
             }
             break;
