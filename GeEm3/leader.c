@@ -39,8 +39,6 @@ leader_state_t* get_leader_state(void) {
 }
 
 void leader_start_logic(void) {
-    extern rgb_config_t rgb_matrix_config;
-
     // Save the current RGB mode
     leader_state.last_rgb_mode = rgb_matrix_get_mode();
 
@@ -67,7 +65,8 @@ void leader_end_logic(void) {
             if (leader_sequence_three_keys(seq->key1, seq->key2, seq->key3)) {
                 // Special handling for sequences that need cursor positioning
                 if (seq->action == ACT_GIT_COMMIT_SHORT) {
-                    SEND_STRING(seq->output SS_TAP(X_LEFT));
+                    SEND_STRING(seq->output);
+                    SEND_STRING(SS_TAP(X_LEFT));
                 } else {
                     SEND_STRING(seq->output);
                 }
@@ -157,7 +156,7 @@ void leader_visual_logic(void) {
                     rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
 
                     rgb_matrix_set_color(9, 15, 230, 44);  // F
-                    rgb_matrix_set_color(38, 15, 230, 44); // M
+                    rgb_matrix_set_color(15, 15, 230, 44); // S
                 }
                 else if (leader_state.second_key == KC_B) {
                     rgb_matrix_set_color(11, 0, 23, 255); // B Blue (Selected)
