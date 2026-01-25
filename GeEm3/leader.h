@@ -5,12 +5,15 @@
 typedef enum {
     CAT_NONE,
     CAT_GIT,
-    CAT_PROGRAM,
+    CAT_CODE,
     CAT_QUICK,
 } leader_category_t;
 
 typedef enum {
     ACT_NONE,
+
+    // Quick actions
+    ACT_QUICK_KILL_CLEAR,
 
     // Git actions
     ACT_GIT_COMMIT_FULL,
@@ -27,8 +30,7 @@ typedef enum {
     ACT_GIT_ADD,
     ACT_GIT_LOG,
 
-    // Quick actions
-    ACT_QUICK_KILL_CLEAR,
+    // Code actions
 
 } leader_action_t;
 
