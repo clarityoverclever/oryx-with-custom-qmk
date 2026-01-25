@@ -742,9 +742,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // Extract the base keycode if it's a tap dance
         uint16_t base_keycode = keycode;
         if (IS_QK_TAP_DANCE(keycode)) {
-            // Get the base keycode from the tap dance
-            tap_dance_action_t *action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
-            // We need to look at what the single tap does
             // For DANCE_2 (C key), the single tap registers KC_C
             switch (QK_TAP_DANCE_GET_INDEX(keycode)) {
                 case DANCE_2: base_keycode = KC_C; break;
