@@ -42,8 +42,6 @@ leader_state_t* get_leader_state(void) {
 }
 
 void leader_start_logic(void) {
-	leader_start();
-
     // Save the current RGB mode
     leader_state.last_rgb_mode = rgb_matrix_get_mode();
 
