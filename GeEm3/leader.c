@@ -210,7 +210,7 @@ void leader_visual_logic(void) {
                 else if (leader_state.second_key == KC_R) {
                     rgb_matrix_set_color(14, 15, 230, 44); // R Blue (Selected)
 
-                    rgb_matrix_set_color(15, 0, 23, 255); // S
+                    rgb_matrix_set_color(15, 15, 230, 44); // S
 					rgb_matrix_set_color(14, 15, 230, 44); // R
          	        rgb_matrix_set_color(21, 15, 230, 44); // C
          	        rgb_matrix_set_color(13, 15, 230, 44); // A
