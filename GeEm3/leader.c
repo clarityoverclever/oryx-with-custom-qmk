@@ -17,6 +17,7 @@ static const leader_sequence_t leader_sequences[] = {
     {KC_G, KC_C, KC_F, ACT_GIT_COMMIT_FULL,     "git commit\n"},
     {KC_G, KC_C, KC_S, ACT_GIT_COMMIT_SHORT,    "git commit -m \"\""},
     {KC_G, KC_P, KC_D, ACT_GIT_PULL,            "git pull\n"},
+	{KC_G, KC_P, KC_R, ACT_GIT_PULL_REBASE,     "git pull --rebase\n"},
     {KC_G, KC_P, KC_U, ACT_GIT_PUSH,            "git push\n"},
     {KC_G, KC_S, KC_T, ACT_GIT_STATUS,          "git status -sb\n"},
     {KC_G, KC_S, KC_I, ACT_GIT_STASH_PUSH,      "git stash push -m \"wip\"\n"},
@@ -166,6 +167,7 @@ void leader_visual_logic(void) {
 
                     rgb_matrix_set_color(34, 15, 230, 44); // U
                     rgb_matrix_set_color(22, 15, 230, 44); // D
+                    rgb_matrix_set_color(14, 15, 230, 44); // R
                 }
                 else if (leader_state.second_key == KC_C) {
                     rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
