@@ -7,6 +7,7 @@ static leader_state_t leader_state = {
     .step = 0,
     .first_key = 0,
     .second_key = 0,
+    .third_key = 0,
     .last_rgb_mode = 0
 };
 
@@ -49,6 +50,7 @@ void leader_start_logic(void) {
     leader_state.step = 0;
     leader_state.first_key = 0;
     leader_state.second_key = 0;
+    leader_state.third_key = 0;
 
     // Change to listen mode (dim white background)
     rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
@@ -58,14 +60,17 @@ void leader_start_logic(void) {
 void leader_end_logic(void) {
     bool did_match = false;
 
-    // Check all sequences in the lookup table
+    // Check all sequences in the lookup table using our custom tracked state
     for (uint8_t i = 0; i < NUM_SEQUENCES; i++) {
         const leader_sequence_t* seq = &leader_sequences[i];
 
         // Check if this sequence matches
         if (seq->key3 != 0) {
-            // Three-key sequence
-            if (leader_sequence_three_keys(seq->key1, seq->key2, seq->key3)) {
+            // Three-key sequence: compare with our tracked keys
+            if (leader_state.step >= 3 &&
+                leader_state.first_key == seq->key1 &&
+                leader_state.second_key == seq->key2 &&
+                leader_state.third_key == seq->key3) {
                 // Special handling for sequences that need cursor positioning
                 if (seq->action == ACT_GIT_COMMIT_SHORT) {
                     SEND_STRING(seq->output);
@@ -77,8 +82,10 @@ void leader_end_logic(void) {
                 break;
             }
         } else if (seq->key2 != 0) {
-            // Two-key sequence
-            if (leader_sequence_two_keys(seq->key1, seq->key2)) {
+            // Two-key sequence: compare with our tracked keys (exact match: step must be exactly 2)
+            if (leader_state.step == 2 &&
+                leader_state.first_key == seq->key1 &&
+                leader_state.second_key == seq->key2) {
                 // Special handling for kill+clear
                 if (seq->action == ACT_QUICK_KILL_CLEAR) {
                     SEND_STRING(SS_LCTL("c") "clear\n");

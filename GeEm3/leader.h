@@ -50,6 +50,7 @@ typedef struct {
     uint8_t step;           // Current step in sequence (0, 1, 2, 3)
     uint16_t first_key;     // First leader key pressed
     uint16_t second_key;    // Second leader key pressed
+    uint16_t third_key;     // Third leader key pressed
     uint8_t last_rgb_mode;  // Saved RGB mode
 } leader_state_t;
 

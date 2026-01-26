@@ -772,6 +772,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             state->second_key = base_keycode;
             state->step = 2;
         } else if (state->step == 2) {
+            state->third_key = base_keycode;
             state->step = 3;
         }
 	// return false if in leader state to prevent default tap-dance processing
