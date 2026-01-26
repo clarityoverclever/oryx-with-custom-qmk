@@ -42,6 +42,8 @@ leader_state_t* get_leader_state(void) {
 }
 
 void leader_start_logic(void) {
+	leader_start();
+
     // Save the current RGB mode
     leader_state.last_rgb_mode = rgb_matrix_get_mode();
 
@@ -145,6 +147,8 @@ void leader_visual_logic(void) {
             }
             else if (leader_state.first_key == KC_C) {
                 rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
+
+                rgb_matrix_set_color(10, 15, 230, 44); // P
             }
             break;
 
@@ -184,7 +188,6 @@ void leader_visual_logic(void) {
 
                 if (leader_state.second_key == KC_P) {
                     rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
-
 
                     rgb_matrix_set_color(45, 15, 230, 44); // H
                     rgb_matrix_set_color(34, 15, 230, 44); // U

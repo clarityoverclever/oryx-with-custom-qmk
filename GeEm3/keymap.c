@@ -8,6 +8,8 @@
 #define ZSA_SAFE_RANGE SAFE_RANGE
 #endif
 
+#define SKIP_IF_LEADING() if (leader_sequence_active()) { return; }
+
 enum custom_keycodes {
   RGB_SLD = ZSA_SAFE_RANGE,
   HSV_168_255_255,
@@ -243,6 +245,8 @@ void dance_1_finished(tap_dance_state_t *state, void *user_data);
 void dance_1_reset(tap_dance_state_t *state, void *user_data);
 
 void on_dance_1(tap_dance_state_t *state, void *user_data) {
+	SKIP_IF_LEADING();
+
     if(state->count == 3) {
         tap_code16(KC_X);
         tap_code16(KC_X);
@@ -254,6 +258,8 @@ void on_dance_1(tap_dance_state_t *state, void *user_data) {
 }
 
 void dance_1_finished(tap_dance_state_t *state, void *user_data) {
+	SKIP_IF_LEADING();
+
     dance_state[1].step = dance_step(state);
     switch (dance_state[1].step) {
         case SINGLE_TAP: register_code16(KC_X); break;
@@ -278,6 +284,8 @@ void dance_2_finished(tap_dance_state_t *state, void *user_data);
 void dance_2_reset(tap_dance_state_t *state, void *user_data);
 
 void on_dance_2(tap_dance_state_t *state, void *user_data) {
+	SKIP_IF_LEADING();
+
     if(state->count == 3) {
         tap_code16(KC_C);
         tap_code16(KC_C);
@@ -289,6 +297,8 @@ void on_dance_2(tap_dance_state_t *state, void *user_data) {
 }
 
 void dance_2_finished(tap_dance_state_t *state, void *user_data) {
+	SKIP_IF_LEADING();
+
     dance_state[2].step = dance_step(state);
     switch (dance_state[2].step) {
         case SINGLE_TAP: register_code16(KC_C); break;
@@ -313,6 +323,8 @@ void dance_3_finished(tap_dance_state_t *state, void *user_data);
 void dance_3_reset(tap_dance_state_t *state, void *user_data);
 
 void on_dance_3(tap_dance_state_t *state, void *user_data) {
+	SKIP_IF_LEADING();
+
     if(state->count == 3) {
         tap_code16(KC_V);
         tap_code16(KC_V);
@@ -324,6 +336,8 @@ void on_dance_3(tap_dance_state_t *state, void *user_data) {
 }
 
 void dance_3_finished(tap_dance_state_t *state, void *user_data) {
+	SKIP_IF_LEADING();
+
     dance_state[3].step = dance_step(state);
     switch (dance_state[3].step) {
         case SINGLE_TAP: register_code16(KC_V); break;
@@ -744,7 +758,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (IS_QK_TAP_DANCE(keycode)) {
             // For DANCE_2 (C key), the single tap registers KC_C
             switch (QK_TAP_DANCE_GET_INDEX(keycode)) {
+                case DANCE_1: base_keycode = KC_X; break;
                 case DANCE_2: base_keycode = KC_C; break;
+                case DANCE_3: base_keycode = KC_V; break;
                 default: base_keycode = keycode; break;
             }
         }
@@ -760,6 +776,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             state->step = 3;
         }
     }
+
+	// return false if in leader state to prevent default tap-dance processing
+	return false;
 
   switch (keycode) {
   case QK_MODS ... QK_MODS_MAX:
