@@ -129,7 +129,6 @@ void leader_visual_logic(void) {
 
         case 1:
             if (leader_state.first_key == KC_Q) {
-                rgb_matrix_set_color(7, 255, 0, 0);  // Q Red (Selected)
                 rgb_matrix_set_color(7, 255, 0, 0);  // Q again for double-tap
             }
             else if (leader_state.first_key == KC_G) {
