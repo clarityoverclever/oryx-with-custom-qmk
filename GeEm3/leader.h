@@ -18,6 +18,7 @@ typedef enum {
     // Git actions
     ACT_GIT_COMMIT_FULL,
     ACT_GIT_COMMIT_SHORT,
+	ACT_GIT_FETCH,
     ACT_GIT_PULL,
     ACT_GIT_PULL_REBASE,
     ACT_GIT_PUSH,
@@ -30,6 +31,13 @@ typedef enum {
     ACT_GIT_INIT,
     ACT_GIT_ADD,
     ACT_GIT_LOG,
+    ACT_GIT_DIFF,
+    ACT_GIT_DIFF_STAGED,
+    ACT_GIT_REBASE,
+    ACT_GIT_REBASE_CONTINUE,
+    ACT_GIT_REBASE_ABORT,
+    ACT_GIT_RESTORE,
+    ACT_GIT_RESET,
 
     // Code actions
 	ACT_CODE_HASHTABLE,

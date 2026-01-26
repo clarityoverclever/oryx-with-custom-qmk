@@ -22,18 +22,26 @@ static const leader_sequence_t leader_sequences[] = {
     {KC_G, KC_S, KC_T, ACT_GIT_STATUS,          "git status -sb\n"},
     {KC_G, KC_S, KC_I, ACT_GIT_STASH_PUSH,      "git stash push -m \"wip\"\n"},
     {KC_G, KC_S, KC_O, ACT_GIT_STASH_POP,       "git stash pop\n"},
-    {KC_G, KC_B, KC_R, ACT_GIT_BRANCH,          "git branch\n"},
+    {KC_G, KC_B, KC_L, ACT_GIT_BRANCH,          "git branch\n"},
     {KC_G, KC_B, KC_N, ACT_GIT_BRANCH_NEW,      "git checkout -b "},
     {KC_G, KC_B, KC_C, ACT_GIT_BRANCH_CHECKOUT, "git checkout "},
+	{KC_G, KC_D, KC_U, ACT_GIT_DIFF,            "git diff --color\n"},
+	{KC_G, KC_D, KC_S, ACT_GIT_DIFF_STAGED,     "git diff --staged\n"},
+	{KC_G, KC_R, KC_R, ACT_GIT_REBASE,          "git rebase\n"},
+	{KC_G, KC_R, KC_A, ACT_GIT_REBASE_ABORT,    "git rebase --abort\n"},
+	{KC_G, KC_R, KC_C, ACT_GIT_REBASE_CONTINUE, "git rebase --continue\n"},
+	{KC_G, KC_R, KC_S, ACT_GIT_RESTORE,         "git restore --staged\n"},
+	{KC_G, KC_R, KC_H, ACT_GIT_RESET,           "git reset --hard\n"},
 
-    {KC_C, KC_P, KC_H, ACT_CODE_HASHTABLE,      "[hashtable] $"},
-    {KC_C, KC_P, KC_U, ACT_CODE_CUSTOM_OBJ,     "[PSCustomObject]@{"},
+    {KC_C, KC_P, KC_H, ACT_CODE_HASHTABLE,      "[hashtable] $  = @{}"},
+    {KC_C, KC_P, KC_U, ACT_CODE_CUSTOM_OBJ,     "[PSCustomObject]@{}"},
 
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
     {KC_G, KC_I, 0,    ACT_GIT_INIT,            "git init\n"},
     {KC_G, KC_A, 0,    ACT_GIT_ADD,             "git add .\n"},
     {KC_G, KC_L, 0,    ACT_GIT_LOG,             "git log --graph --oneline --decorate --all\n"},
+    {KC_G, KC_F, 0,    ACT_GIT_FETCH,           "git fetch\n"},
 };
 
 #define NUM_SEQUENCES (sizeof(leader_sequences) / sizeof(leader_sequences[0]))
@@ -150,11 +158,15 @@ void leader_visual_logic(void) {
                 rgb_matrix_set_color(13, 15, 230, 44); // A
                 rgb_matrix_set_color(41, 15, 230, 44); // I
                 rgb_matrix_set_color(33, 15, 230, 44); // L
+				rgb_matrix_set_color(14, 15, 230, 44); // R
+                rgb_matrix_set_color(9, 15, 230, 44);  // F
+                rgb_matrix_set_color(22, 15, 230, 44); // D
             }
             else if (leader_state.first_key == KC_C) {
                 rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
 
                 rgb_matrix_set_color(10, 15, 230, 44); // P
+            	rgb_matrix_set_color(17, 0, 23, 255); // G
             }
             break;
 
@@ -178,7 +190,7 @@ void leader_visual_logic(void) {
                 else if (leader_state.second_key == KC_B) {
                     rgb_matrix_set_color(11, 0, 23, 255); // B Blue (Selected)
 
-                    rgb_matrix_set_color(14, 15, 230, 44); // R
+                    rgb_matrix_set_color(33, 15, 230, 44); // L
                     rgb_matrix_set_color(39, 15, 230, 44); // N
                     rgb_matrix_set_color(21, 15, 230, 44); // C
                 }
@@ -188,6 +200,21 @@ void leader_visual_logic(void) {
                     rgb_matrix_set_color(16, 15, 230, 44); // T
                     rgb_matrix_set_color(41, 15, 230, 44); // I
                     rgb_matrix_set_color(42, 15, 230, 44); // O
+                }
+                else if (leader_state.second_key == KC_D) {
+                    rgb_matrix_set_color(22, 15, 230, 44); // D Blue (Selected)
+
+                    rgb_matrix_set_color(15, 0, 23, 255); // S
+					rgb_matrix_set_color(34, 15, 230, 44); // U
+                }
+                else if (leader_state.second_key == KC_R) {
+                    rgb_matrix_set_color(14, 15, 230, 44); // R Blue (Selected)
+
+                    rgb_matrix_set_color(15, 0, 23, 255); // S
+					rgb_matrix_set_color(14, 15, 230, 44); // R
+         	        rgb_matrix_set_color(21, 15, 230, 44); // C
+         	        rgb_matrix_set_color(13, 15, 230, 44); // A
+					rgb_matrix_set_color(45, 15, 230, 44); // H
                 }
             }
             if (leader_state.first_key == KC_C) {
