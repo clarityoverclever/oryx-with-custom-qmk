@@ -756,7 +756,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         // Extract the base keycode if it's a tap dance
         uint16_t base_keycode = keycode;
         if (IS_QK_TAP_DANCE(keycode)) {
-            // For DANCE_2 (C key), the single tap registers KC_C
             switch (QK_TAP_DANCE_GET_INDEX(keycode)) {
                 case DANCE_1: base_keycode = KC_X; break;
                 case DANCE_2: base_keycode = KC_C; break;
@@ -775,10 +774,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         } else if (state->step == 2) {
             state->step = 3;
         }
-    }
-
 	// return false if in leader state to prevent default tap-dance processing
 	return false;
+    }
+
 
   switch (keycode) {
   case QK_MODS ... QK_MODS_MAX:
