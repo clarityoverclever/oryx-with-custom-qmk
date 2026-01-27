@@ -44,6 +44,8 @@ static const leader_sequence_t leader_sequences[] = {
 
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
+	{KC_Q, KC_R, 0,    ACT_QUICK_RECORD,        NULL},
+	{KC_Q, KC_P, 0,    ACT_QUICK_PLAY,          NULL},
 	{KC_Q, KC_S, 0,    ACT_QUICK_SUDO_RERUN,    "sudo !!\n"},
     {KC_G, KC_I, 0,    ACT_GIT_INIT,            "git init\n"},
     {KC_G, KC_A, 0,    ACT_GIT_ADD,             "git add .\n"},
@@ -118,7 +120,13 @@ void leader_end_logic(void) {
                 // Special handling for kill+clear
                 if (seq->action == ACT_QUICK_KILL_CLEAR) {
                     SEND_STRING(SS_LCTL("c") "clear\n");
-                } else {
+                } else if (seq->action == ACT_QUICK_RECORD) {
+    				// start/stop dynamic macro record
+					tap_code(DM_REC1);
+				} else if (seq->action == ACT_QUICK_PLAY) {
+    				// play recorded macro
+					tap_code(DM_PLY1);
+				} else {
                     SEND_STRING(seq->output);
                 }
                 did_match = true;
@@ -168,6 +176,8 @@ void leader_visual_logic(void) {
             if (leader_state.first_key == KC_Q) { // Quick actions
                 rgb_matrix_set_color(7, 255, 0, 0);  // Q ctrl + c && clear
 				rgb_matrix_set_color(15, 15, 230, 44); // S sudo rerun
+				rgb_matrix_set_color(14, 15, 230, 44); // R record macro
+				rgb_matrix_set_color(10, 15, 230, 44); // P play macro
             }
             else if (leader_state.first_key == KC_G) { // Git actions
                 rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
