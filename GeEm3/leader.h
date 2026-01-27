@@ -40,7 +40,7 @@ typedef enum {
     ACT_GIT_RESET,
 
     // Code actions
-	ACT_CODE_HASHTABLE,
+	ACT_CODE_GO_ERROR,
 	ACT_CODE_CUSTOM_OBJ,
 
 } leader_action_t;

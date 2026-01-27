@@ -33,8 +33,8 @@ static const leader_sequence_t leader_sequences[] = {
 	{KC_G, KC_R, KC_S, ACT_GIT_RESTORE,         "git restore --staged\n"},
 	{KC_G, KC_R, KC_H, ACT_GIT_RESET,           "git reset --hard\n"},
 
-    {KC_C, KC_P, KC_H, ACT_CODE_HASHTABLE,      "[hashtable] $  = @{}"},
-    {KC_C, KC_P, KC_U, ACT_CODE_CUSTOM_OBJ,     "[PSCustomObject]@{}"},
+    {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  "[PSCustomObject]@{}"},
+    {KC_C, KC_G, KC_F, ACT_CODE_GO_ERROR,       "placeholder for go error"},
 
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
@@ -84,7 +84,7 @@ void leader_end_logic(void) {
                 if (seq->action == ACT_GIT_COMMIT_SHORT) {
                     SEND_STRING(seq->output);
                     SEND_STRING(SS_TAP(X_LEFT));
-                } else if (seq->action == ACT_CODE_CUSTOM_OBJ) {
+                } else if (seq->action == ACT_CODE_PS_CUSTOM_OBJ) {
 					SEND_STRING(seq->output);
 					SEND_STRING(SS_TAP(X_LEFT));
 				} else {
@@ -217,17 +217,21 @@ void leader_visual_logic(void) {
 					rgb_matrix_set_color(14, 15, 230, 44); // R rebase
          	        rgb_matrix_set_color(21, 15, 230, 44); // C continue rebase
          	        rgb_matrix_set_color(13, 15, 230, 44); // A abort rebase
-					rgb_matrix_set_color(45, 15, 230, 44); // H reset hard
+					rgb_matrix_set_color(45, 255, 0, 0); // H reset hard
                 }
             }
             if (leader_state.first_key == KC_C) { // Code actions
                 rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
 
-                if (leader_state.second_key == KC_P) {
+                if (leader_state.second_key == KC_P) { // Powershell
                     rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
-                    rgb_matrix_set_color(45, 15, 230, 44); // H
                     rgb_matrix_set_color(34, 15, 230, 44); // U
+                }
+                else if (leader_state.second_key == KC_G) { // Golang
+                    rgb_matrix_set_color(17, 0, 23, 255);  // G Blue (Selected)
+
+                    rgb_matrix_set_color(40, 15, 230, 44); // E
                 }
             }
             break;
