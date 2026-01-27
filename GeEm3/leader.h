@@ -41,7 +41,7 @@ typedef enum {
 
     // Code actions
 	ACT_CODE_GO_ERROR,
-	ACT_CODE_CUSTOM_OBJ,
+	ACT_CODE_PS_CUSTOM_OBJ,
 
 } leader_action_t;
 
