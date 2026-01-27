@@ -34,7 +34,7 @@ static const leader_sequence_t leader_sequences[] = {
 	{KC_G, KC_R, KC_H, ACT_GIT_RESET,           "git reset --hard\n"},
 
     {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  "[PSCustomObject]@{}"},
-    {KC_C, KC_G, KC_F, ACT_CODE_GO_ERROR,       "placeholder for go error"},
+    {KC_C, KC_G, KC_E, ACT_CODE_GO_ERROR,       "placeholder for go error"},
 
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
