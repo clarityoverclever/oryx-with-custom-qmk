@@ -35,7 +35,12 @@ static const leader_sequence_t leader_sequences[] = {
 	{KC_G, KC_F, KC_C, ACT_GIT_FIND_CONFLICT,   NULL},  // Special handling
 
     {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  " = [PSCustomObject]@{}"},
+	{KC_C, KC_P, KC_S, ACT_CODE_PS_SET_PATH,    "$path = "},
     {KC_C, KC_G, KC_E, ACT_CODE_GO_ERROR,       "if err != nil {\nreturn fmt.Errorf(\" %w\", err)\n}"},
+
+    {KC_S, KC_W, KC_T, ACT_SYSTEM_WIN_TAKEOWN,     "takeown /F $path /R /D Y\n"},
+    {KC_S, KC_W, KC_I, ACT_SYSTEM_WIN_ICACLS_GRANT,"icacls $path /grant Administrators:F /T\n"},
+    {KC_S, KC_W, KC_R, ACT_SYSTEM_WIN_ICACLS_RESET,"icacls $path /reset /T\n"},
 
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
@@ -156,6 +161,7 @@ void leader_visual_logic(void) {
             rgb_matrix_set_color(7, 0, 23, 255);  // Q quick actions
             rgb_matrix_set_color(17, 0, 23, 255); // G git actions
             rgb_matrix_set_color(21, 0, 23, 255); // C code actions
+			rgb_matrix_set_color(15, 0, 23, 255); // S system actions
             break;
 
         case 1:
@@ -183,6 +189,12 @@ void leader_visual_logic(void) {
 
                 rgb_matrix_set_color(10, 15, 230, 44); // P powershell
             	rgb_matrix_set_color(17, 15, 230, 44); // G golang
+            }
+            else if (leader_state.first_key == KC_S) { // System actions
+                rgb_matrix_set_color(15, 0, 23, 255); // S Blue (Selected)
+
+                rgb_matrix_set_color(8, 15, 230, 44); // W Windows
+				//rgb_matrix_set_color(33, 15, 230, 44); // L Linux
             }
             break;
 
@@ -239,12 +251,24 @@ void leader_visual_logic(void) {
                 if (leader_state.second_key == KC_P) { // Powershell
                     rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
-                    rgb_matrix_set_color(34, 15, 230, 44); // U
+                    rgb_matrix_set_color(34, 15, 230, 44); // U PsCustomObject
+					rgb_matrix_set_color(15, 15, 230, 44); // S set $path
                 }
                 else if (leader_state.second_key == KC_G) { // Golang
                     rgb_matrix_set_color(17, 0, 23, 255);  // G Blue (Selected)
 
                     rgb_matrix_set_color(40, 15, 230, 44); // E
+                }
+            }
+            if (leader_state.first_key == KC_S) { // System actions
+                rgb_matrix_set_color(15, 0, 23, 255); // S Blue (Selected)
+
+                if (leader_state.second_key == KC_W) { // Windows
+                    rgb_matrix_set_color(8, 0, 23, 255);  // W Blue (Selected)
+
+                    rgb_matrix_set_color(41, 15, 230, 44); // I icacls grant
+                    rgb_matrix_set_color(14, 15, 230, 44); // R icacls reset
+                    rgb_matrix_set_color(16, 15, 230, 44); // T takeown
                 }
             }
             break;

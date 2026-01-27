@@ -6,6 +6,7 @@ typedef enum {
     CAT_NONE,
     CAT_GIT,
     CAT_CODE,
+    CAT_SYSTEM,
     CAT_QUICK,
 } leader_category_t;
 
@@ -44,6 +45,12 @@ typedef enum {
     // Code actions
 	ACT_CODE_GO_ERROR,
 	ACT_CODE_PS_CUSTOM_OBJ,
+    ACT_CODE_PS_SET_PATH,
+
+    // System actions
+    ACT_SYSTEM_WIN_TAKEOWN,
+    ACT_SYSTEM_WIN_ICACLS_GRANT,
+    ACT_SYSTEM_WIN_ICACLS_RESET,
 
 } leader_action_t;
 
