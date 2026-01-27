@@ -84,7 +84,10 @@ void leader_end_logic(void) {
                 if (seq->action == ACT_GIT_COMMIT_SHORT) {
                     SEND_STRING(seq->output);
                     SEND_STRING(SS_TAP(X_LEFT));
-                } else {
+                } else if (seq->action == ACT_CODE_CUSTOM_OBJ) {
+					SEND_STRING(seq->output);
+					SEND_STRING(SS_TAP(X_LEFT));
+				} else {
                     SEND_STRING(seq->output);
                 }
                 did_match = true;
