@@ -137,36 +137,36 @@ void leader_visual_logic(void) {
 
     switch (leader_state.step) {
         case 0:
-            // Blue for first level options
-            rgb_matrix_set_color(7, 0, 23, 255);  // Q
-            rgb_matrix_set_color(17, 0, 23, 255); // G
-            rgb_matrix_set_color(21, 0, 23, 255); // C
+            // Blue for first level category selection
+            rgb_matrix_set_color(7, 0, 23, 255);  // Q quick actions
+            rgb_matrix_set_color(17, 0, 23, 255); // G git actions
+            rgb_matrix_set_color(21, 0, 23, 255); // C code actions
             break;
 
         case 1:
-            if (leader_state.first_key == KC_Q) {
-                rgb_matrix_set_color(7, 255, 0, 0);  // Q again for double-tap
+            if (leader_state.first_key == KC_Q) { // Quick actions
+                rgb_matrix_set_color(7, 255, 0, 0);  // Q ctrl + c && clear
             }
-            else if (leader_state.first_key == KC_G) {
+            else if (leader_state.first_key == KC_G) { // Git actions
                 rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
 
                 // Green for second level git options
-                rgb_matrix_set_color(15, 15, 230, 44); // S
-                rgb_matrix_set_color(11, 15, 230, 44); // B
-                rgb_matrix_set_color(10, 15, 230, 44); // P
-                rgb_matrix_set_color(21, 15, 230, 44); // C
-                rgb_matrix_set_color(13, 15, 230, 44); // A
-                rgb_matrix_set_color(41, 15, 230, 44); // I
-                rgb_matrix_set_color(33, 15, 230, 44); // L
-				rgb_matrix_set_color(14, 15, 230, 44); // R
-                rgb_matrix_set_color(9, 15, 230, 44);  // F
-                rgb_matrix_set_color(22, 15, 230, 44); // D
+                rgb_matrix_set_color(15, 15, 230, 44); // S status / stash
+                rgb_matrix_set_color(11, 15, 230, 44); // B branch
+                rgb_matrix_set_color(10, 15, 230, 44); // P pull
+                rgb_matrix_set_color(21, 15, 230, 44); // C commit
+                rgb_matrix_set_color(13, 15, 230, 44); // A add
+                rgb_matrix_set_color(41, 15, 230, 44); // I init
+                rgb_matrix_set_color(33, 15, 230, 44); // L log
+				rgb_matrix_set_color(14, 15, 230, 44); // R rebase / restore / reset
+                rgb_matrix_set_color(9, 15, 230, 44);  // F fetch
+                rgb_matrix_set_color(22, 15, 230, 44); // D diff
             }
-            else if (leader_state.first_key == KC_C) {
+            else if (leader_state.first_key == KC_C) { // Code actions
                 rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
 
-                rgb_matrix_set_color(10, 15, 230, 44); // P
-            	rgb_matrix_set_color(17, 0, 23, 255); // G
+                rgb_matrix_set_color(10, 15, 230, 44); // P powershell
+            	rgb_matrix_set_color(17, 15, 230, 44); // G golang
             }
             break;
 
@@ -174,50 +174,50 @@ void leader_visual_logic(void) {
             if (leader_state.first_key == KC_G) {
                 rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
 
-                if (leader_state.second_key == KC_P) {
+                if (leader_state.second_key == KC_P) { // Pull
                     rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
-                    rgb_matrix_set_color(34, 15, 230, 44); // U
-                    rgb_matrix_set_color(22, 15, 230, 44); // D
-                    rgb_matrix_set_color(14, 15, 230, 44); // R
+                    rgb_matrix_set_color(34, 15, 230, 44); // U push
+                    rgb_matrix_set_color(22, 15, 230, 44); // D pull
+                    rgb_matrix_set_color(14, 15, 230, 44); // R pull rebase
                 }
-                else if (leader_state.second_key == KC_C) {
+                else if (leader_state.second_key == KC_C) { // Commit
                     rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
 
-                    rgb_matrix_set_color(9, 15, 230, 44);  // F
-                    rgb_matrix_set_color(15, 15, 230, 44); // S
+                    rgb_matrix_set_color(9, 15, 230, 44);  // F full
+                    rgb_matrix_set_color(15, 15, 230, 44); // S short
                 }
-                else if (leader_state.second_key == KC_B) {
+                else if (leader_state.second_key == KC_B) { // Branch
                     rgb_matrix_set_color(11, 0, 23, 255); // B Blue (Selected)
 
-                    rgb_matrix_set_color(33, 15, 230, 44); // L
-                    rgb_matrix_set_color(39, 15, 230, 44); // N
-                    rgb_matrix_set_color(21, 15, 230, 44); // C
+                    rgb_matrix_set_color(33, 15, 230, 44); // L list
+                    rgb_matrix_set_color(39, 15, 230, 44); // N new
+                    rgb_matrix_set_color(21, 15, 230, 44); // C checkout
                 }
-                else if (leader_state.second_key == KC_S) {
+                else if (leader_state.second_key == KC_S) { // Status / Stash
                     rgb_matrix_set_color(15, 0, 23, 255); // S Blue (Selected)
 
-                    rgb_matrix_set_color(16, 15, 230, 44); // T
-                    rgb_matrix_set_color(41, 15, 230, 44); // I
-                    rgb_matrix_set_color(42, 15, 230, 44); // O
+                    rgb_matrix_set_color(16, 15, 230, 44); // T status
+                    rgb_matrix_set_color(41, 15, 230, 44); // I stash push
+                    rgb_matrix_set_color(42, 15, 230, 44); // O stash pop
                 }
-                else if (leader_state.second_key == KC_D) {
-                    rgb_matrix_set_color(22, 15, 230, 44); // D Blue (Selected)
+                else if (leader_state.second_key == KC_D) { // Diff
+                    rgb_matrix_set_color(22, 0, 23, 255); // D Blue (Selected)
 
-                    rgb_matrix_set_color(15, 45, 15, 230, 44); // S
-					rgb_matrix_set_color(34, 15, 230, 44); // U
+                    rgb_matrix_set_color(15, 45, 15, 230, 44); // S staged
+					rgb_matrix_set_color(34, 15, 230, 44); // U unstaged
                 }
-                else if (leader_state.second_key == KC_R) {
-                    rgb_matrix_set_color(14, 15, 230, 44); // R Blue (Selected)
+                else if (leader_state.second_key == KC_R) { // Rebase / Restore / Reset
+                    rgb_matrix_set_color(14, 0, 23, 255); // R Blue (Selected)
 
-                    rgb_matrix_set_color(15, 15, 230, 44); // S
-					rgb_matrix_set_color(14, 15, 230, 44); // R
-         	        rgb_matrix_set_color(21, 15, 230, 44); // C
-         	        rgb_matrix_set_color(13, 15, 230, 44); // A
-					rgb_matrix_set_color(45, 15, 230, 44); // H
+                    rgb_matrix_set_color(15, 15, 230, 44); // S restore staged
+					rgb_matrix_set_color(14, 15, 230, 44); // R rebase
+         	        rgb_matrix_set_color(21, 15, 230, 44); // C continue rebase
+         	        rgb_matrix_set_color(13, 15, 230, 44); // A abort rebase
+					rgb_matrix_set_color(45, 15, 230, 44); // H reset hard
                 }
             }
-            if (leader_state.first_key == KC_C) {
+            if (leader_state.first_key == KC_C) { // Code actions
                 rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
 
                 if (leader_state.second_key == KC_P) {
