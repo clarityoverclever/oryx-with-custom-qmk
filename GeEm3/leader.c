@@ -207,7 +207,7 @@ void leader_visual_logic(void) {
                 else if (leader_state.second_key == KC_D) { // Diff
                     rgb_matrix_set_color(22, 0, 23, 255); // D Blue (Selected)
 
-                    rgb_matrix_set_color(15, 45, 15, 230, 44); // S staged
+                    rgb_matrix_set_color(15, 15, 230, 44); // S staged
 					rgb_matrix_set_color(34, 15, 230, 44); // U unstaged
                 }
                 else if (leader_state.second_key == KC_R) { // Rebase / Restore / Reset
