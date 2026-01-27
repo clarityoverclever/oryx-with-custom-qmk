@@ -23,8 +23,8 @@ static const leader_sequence_t leader_sequences[] = {
     {KC_G, KC_S, KC_I, ACT_GIT_STASH_PUSH,      "git stash push -m \"wip\"\n"},
     {KC_G, KC_S, KC_O, ACT_GIT_STASH_POP,       "git stash pop\n"},
     {KC_G, KC_B, KC_L, ACT_GIT_BRANCH,          "git branch\n"},
-    {KC_G, KC_B, KC_N, ACT_GIT_BRANCH_NEW,      "git checkout -b "},
-    {KC_G, KC_B, KC_C, ACT_GIT_BRANCH_CHECKOUT, "git checkout "},
+    {KC_G, KC_B, KC_N, ACT_GIT_BRANCH_NEW,      "git switch -c "},
+    {KC_G, KC_B, KC_C, ACT_GIT_BRANCH_CHECKOUT, "git switch "},
 	{KC_G, KC_D, KC_U, ACT_GIT_DIFF,            "git diff --color\n"},
 	{KC_G, KC_D, KC_S, ACT_GIT_DIFF_STAGED,     "git diff --staged\n"},
 	{KC_G, KC_R, KC_R, ACT_GIT_REBASE,          "git rebase\n"},
@@ -32,9 +32,10 @@ static const leader_sequence_t leader_sequences[] = {
 	{KC_G, KC_R, KC_C, ACT_GIT_REBASE_CONTINUE, "git rebase --continue\n"},
 	{KC_G, KC_R, KC_S, ACT_GIT_RESTORE,         "git restore --staged\n"},
 	{KC_G, KC_R, KC_H, ACT_GIT_RESET,           "git reset --hard\n"},
+	{KC_G, KC_F, KC_C, ACT_GIT_FIND_CONFLICT,   NULL},  // Special handling
 
-    {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  "[PSCustomObject]@{}"},
-    {KC_C, KC_G, KC_E, ACT_CODE_GO_ERROR,       "placeholder for go error"},
+    {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  " = [PSCustomObject]@{}"},
+    {KC_C, KC_G, KC_E, ACT_CODE_GO_ERROR,       "if err != nil {\nreturn fmt.Errorf(\" %w\", err)\n}"},
 
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
@@ -83,10 +84,20 @@ void leader_end_logic(void) {
                 // Special handling for sequences that need cursor positioning
                 if (seq->action == ACT_GIT_COMMIT_SHORT) {
                     SEND_STRING(seq->output);
-                    SEND_STRING(SS_TAP(X_LEFT));
+                    tap_code(KC_LEFT);
                 } else if (seq->action == ACT_CODE_PS_CUSTOM_OBJ) {
 					SEND_STRING(seq->output);
-					SEND_STRING(SS_TAP(X_LEFT));
+					tap_code(KC_LEFT);
+				} else if (seq->action == ACT_CODE_GO_ERROR) {
+					SEND_STRING(seq->output);
+					for (int i = 0; i < 10; i++) { tap_code(KC_LEFT); }
+				} else if (seq->action == ACT_GIT_FIND_CONFLICT) {
+    				// Open Search (Ctrl+F)
+    				tap_code16(LCTL(KC_F));
+  					wait_ms(150); // Small buffer for the search UI to pop up
+   					SEND_STRING(seq->output);
+					tap_code(KC_ENT);
+					tap_code(KC_ESC);
 				} else {
                     SEND_STRING(seq->output);
                 }

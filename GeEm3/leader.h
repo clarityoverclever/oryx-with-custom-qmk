@@ -38,6 +38,7 @@ typedef enum {
     ACT_GIT_REBASE_ABORT,
     ACT_GIT_RESTORE,
     ACT_GIT_RESET,
+    ACT_GIT_FIND_CONFLICT,
 
     // Code actions
 	ACT_CODE_GO_ERROR,
