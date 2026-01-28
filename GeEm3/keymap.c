@@ -87,12 +87,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 const uint16_t PROGMEM combo0[] = { KC_M, KC_R, COMBO_END};
 const uint16_t PROGMEM combo1[] = { KC_M, KC_S, COMBO_END};
-const uint16_t PROGMEM combo2[] = { KC_P, KC_M, COMBO_END};
+const uint16_t PROGMEM combo2[] = { KC_M, KC_P, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    COMBO(combo0, KC_1),
-    COMBO(combo1, KC_2),
-    COMBO(combo2, KC_3),
+    COMBO(combo0, DM_REC1),
+    COMBO(combo1, DM_RSTP),
+    COMBO(combo2, DM_PLY1),
 };
 
 extern rgb_config_t rgb_matrix_config;

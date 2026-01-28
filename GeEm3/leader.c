@@ -30,7 +30,7 @@ static const leader_sequence_t leader_sequences[] = {
 	{KC_G, KC_R, KC_R, ACT_GIT_REBASE,          "git rebase\n"},
 	{KC_G, KC_R, KC_A, ACT_GIT_REBASE_ABORT,    "git rebase --abort\n"},
 	{KC_G, KC_R, KC_C, ACT_GIT_REBASE_CONTINUE, "git rebase --continue\n"},
-	{KC_G, KC_R, KC_S, ACT_GIT_RESTORE,         "git restore --staged\n"},
+	{KC_G, KC_R, KC_F, ACT_GIT_RESTORE,         "git restore "},
 	{KC_G, KC_R, KC_H, ACT_GIT_RESET,           "git reset --hard\n"},
 	{KC_G, KC_F, KC_C, ACT_GIT_FIND_CONFLICT,   NULL},  // Special handling
 
@@ -49,6 +49,7 @@ static const leader_sequence_t leader_sequences[] = {
     {KC_G, KC_A, 0,    ACT_GIT_ADD,             "git add .\n"},
     {KC_G, KC_L, 0,    ACT_GIT_LOG,             "git log --graph --oneline --decorate --all\n"},
     {KC_G, KC_F, 0,    ACT_GIT_FETCH,           "git fetch\n"},
+	{KC_G, KC_U, 0,    ACT_GIT_UNSTAGE,         "git reset\n"},
 };
 
 #define NUM_SEQUENCES (sizeof(leader_sequences) / sizeof(leader_sequences[0]))
@@ -183,6 +184,7 @@ void leader_visual_logic(void) {
 				rgb_matrix_set_color(14, 15, 230, 44); // R rebase / restore / reset
                 rgb_matrix_set_color(9, 15, 230, 44);  // F fetch
                 rgb_matrix_set_color(22, 15, 230, 44); // D diff
+				rgb_matrix_set_color(34, 15, 230, 44); // U unstage
             }
             else if (leader_state.first_key == KC_C) { // Code actions
                 rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
@@ -238,7 +240,7 @@ void leader_visual_logic(void) {
                 else if (leader_state.second_key == KC_R) { // Rebase / Restore / Reset
                     rgb_matrix_set_color(14, 0, 23, 255); // R Blue (Selected)
 
-                    rgb_matrix_set_color(15, 15, 230, 44); // S restore staged
+                    rgb_matrix_set_color(9, 255, 0, 0); // F restore
 					rgb_matrix_set_color(14, 15, 230, 44); // R rebase
          	        rgb_matrix_set_color(21, 15, 230, 44); // C continue rebase
          	        rgb_matrix_set_color(13, 15, 230, 44); // A abort rebase
@@ -257,7 +259,7 @@ void leader_visual_logic(void) {
                 else if (leader_state.second_key == KC_G) { // Golang
                     rgb_matrix_set_color(17, 0, 23, 255);  // G Blue (Selected)
 
-                    rgb_matrix_set_color(40, 15, 230, 44); // E
+                    rgb_matrix_set_color(40, 15, 230, 44); // E error
                 }
             }
             if (leader_state.first_key == KC_S) { // System actions
