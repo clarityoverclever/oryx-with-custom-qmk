@@ -16,8 +16,6 @@ typedef enum {
     // Quick actions
     ACT_QUICK_KILL_CLEAR,
 	ACT_QUICK_SUDO_RERUN,
-    ACT_QUICK_RECORD.
-    ACT_QUICK_PLAY,
 
     // Git actions
     ACT_GIT_COMMIT_FULL,
