@@ -59,8 +59,7 @@ static const leader_sequence_t leader_sequences[] = {
 #define NUM_SEQUENCES (sizeof(leader_sequences) / sizeof(leader_sequences[0]))
 
 // Accessor for state
-leader_state_t* get_leader_state(void) {git fetch
-
+leader_state_t* get_leader_state(void) {
     return &leader_state;
 }
 
