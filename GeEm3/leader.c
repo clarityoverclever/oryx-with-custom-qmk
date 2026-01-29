@@ -32,15 +32,19 @@ static const leader_sequence_t leader_sequences[] = {
 	{KC_G, KC_R, KC_C, ACT_GIT_REBASE_CONTINUE, "git rebase --continue\n"},
 	{KC_G, KC_R, KC_F, ACT_GIT_RESTORE,         "git restore "},
 	{KC_G, KC_R, KC_H, ACT_GIT_RESET,           "git reset --hard\n"},
-	{KC_G, KC_F, KC_C, ACT_GIT_FIND_CONFLICT,   NULL},  // Special handling
+	{KC_G, KC_F, KC_C, ACT_GIT_FIND_CONFLICT,   "<<<<<<<"},
 
-    {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  " = [PSCustomObject]@{}"},
-	{KC_C, KC_P, KC_S, ACT_CODE_PS_SET_PATH,    "$path = "},
-    {KC_C, KC_G, KC_E, ACT_CODE_GO_ERROR,       "if err != nil {\nreturn fmt.Errorf(\" %w\", err)\n}"},
+    {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  " = [PSCustomObject]@{\n}"},
+	{KC_C, KC_P, KC_S, ACT_CODE_PS_SET_PATH,    "$path = \"\""},
+    {KC_C, KC_G, KC_E, ACT_CODE_GO_ERROR,       "if err != nil {\n}"},
 
-    {KC_S, KC_W, KC_T, ACT_SYSTEM_WIN_TAKEOWN,     "takeown /F $path /R /D Y\n"},
-    {KC_S, KC_W, KC_I, ACT_SYSTEM_WIN_ICACLS_GRANT,"icacls $path /grant Administrators:F /T\n"},
-    {KC_S, KC_W, KC_R, ACT_SYSTEM_WIN_ICACLS_RESET,"icacls $path /reset /T\n"},
+    {KC_S, KC_W, KC_T, ACT_SYSTEM_WIN_TAKEOWN,            "takeown /F $path /R /D Y"},
+    {KC_S, KC_W, KC_R, ACT_SYSTEM_WIN_ICACLS_RESET,       "icacls $path /reset /T\n"},
+    {KC_S, KC_W, KC_A, ACT_SYSTEM_WIN_ICACLS_GRANT,       "icacls $path /grant Administrators:F /T\n"},
+    {KC_S, KC_W, KC_O, ACT_SYSTEM_WIN_ICACLS_SET_SYSTEM,  "icacls $path /setowner SYSTEM /T\n"},
+    {KC_S, KC_W, KC_I, ACT_SYSTEM_WIN_ICACLS_INH_REMOVE,  "icacls $path /inheritance:r\n"},
+    {KC_S, KC_W, KC_D, ACT_SYSTEM_WIN_ICACLS_REMOVE_DENY, "icacls $path /remove:d *\n"},
+
 
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
@@ -55,7 +59,8 @@ static const leader_sequence_t leader_sequences[] = {
 #define NUM_SEQUENCES (sizeof(leader_sequences) / sizeof(leader_sequences[0]))
 
 // Accessor for state
-leader_state_t* get_leader_state(void) {
+leader_state_t* get_leader_state(void) {git fetch
+
     return &leader_state;
 }
 
@@ -94,10 +99,9 @@ void leader_end_logic(void) {
                     tap_code(KC_LEFT);
                 } else if (seq->action == ACT_CODE_PS_CUSTOM_OBJ) {
 					SEND_STRING(seq->output);
-					tap_code(KC_LEFT);
 				} else if (seq->action == ACT_CODE_GO_ERROR) {
 					SEND_STRING(seq->output);
-					for (int i = 0; i < 10; i++) { tap_code(KC_LEFT); }
+					//for (int i = 0; i < 13; i++) { tap_code(KC_LEFT); }
 				} else if (seq->action == ACT_GIT_FIND_CONFLICT) {
     				// Open Search (Ctrl+F)
     				tap_code16(LCTL(KC_F));
@@ -173,7 +177,6 @@ void leader_visual_logic(void) {
             else if (leader_state.first_key == KC_G) { // Git actions
                 rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
 
-                // Green for second level git options
                 rgb_matrix_set_color(15, 15, 230, 44); // S status / stash
                 rgb_matrix_set_color(11, 15, 230, 44); // B branch
                 rgb_matrix_set_color(10, 15, 230, 44); // P pull
@@ -182,7 +185,7 @@ void leader_visual_logic(void) {
                 rgb_matrix_set_color(41, 15, 230, 44); // I init
                 rgb_matrix_set_color(33, 15, 230, 44); // L log
 				rgb_matrix_set_color(14, 15, 230, 44); // R rebase / restore / reset
-                rgb_matrix_set_color(9, 15, 230, 44);  // F fetch
+                rgb_matrix_set_color(9, 15, 230, 44);  // F fetch / find conflict
                 rgb_matrix_set_color(22, 15, 230, 44); // D diff
 				rgb_matrix_set_color(34, 15, 230, 44); // U unstage
             }
@@ -246,6 +249,11 @@ void leader_visual_logic(void) {
          	        rgb_matrix_set_color(13, 15, 230, 44); // A abort rebase
 					rgb_matrix_set_color(45, 255, 0, 0); // H reset hard
                 }
+                else if (leader_state.second_key == KC_F) { // Find
+                    rgb_matrix_set_color(9, 0, 23, 255); // F Blue (Selected)
+
+                    rgb_matrix_set_color(21, 15, 230, 44); // C conflict
+                }
             }
             if (leader_state.first_key == KC_C) { // Code actions
                 rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
@@ -268,9 +276,12 @@ void leader_visual_logic(void) {
                 if (leader_state.second_key == KC_W) { // Windows
                     rgb_matrix_set_color(8, 0, 23, 255);  // W Blue (Selected)
 
-                    rgb_matrix_set_color(41, 15, 230, 44); // I icacls grant
+                    rgb_matrix_set_color(13, 15, 230, 44); // A icacls grant
                     rgb_matrix_set_color(14, 15, 230, 44); // R icacls reset
                     rgb_matrix_set_color(16, 15, 230, 44); // T takeown
+                    rgb_matrix_set_color(42, 15, 230, 44); // O icacls system owner
+                    rgb_matrix_set_color(41, 15, 230, 44); // I icacls inheritance remove
+                    rgb_matrix_set_color(22, 15, 230, 44); // D icacls remove deny
                 }
             }
             break;
