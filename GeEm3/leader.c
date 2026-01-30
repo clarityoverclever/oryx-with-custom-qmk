@@ -96,6 +96,9 @@ void leader_end_logic(void) {
                 if (seq->action == ACT_GIT_COMMIT_SHORT) {
                     SEND_STRING(seq->output);
                     tap_code(KC_LEFT);
+                } else if (seq->action == ACT_CODE_PS_SET_PATH) {
+                    SEND_STRING(seq->output);
+                    tap_code(KC_LEFT);
                 } else if (seq->action == ACT_CODE_PS_CUSTOM_OBJ) {
 					SEND_STRING(seq->output);
 				} else if (seq->action == ACT_CODE_GO_ERROR) {
