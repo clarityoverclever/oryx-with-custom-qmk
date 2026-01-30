@@ -62,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [1] = LAYOUT_voyager(
     MT(MOD_LGUI, KC_ESCAPE),KC_F1,          KC_F2,          KC_F3,          KC_F4,          TD(DANCE_6),                                    KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         TD(DANCE_10),   
-    QK_LLCK,        ST_MACRO_0,     ST_MACRO_1,     ST_MACRO_2,     ST_MACRO_3,     TD(DANCE_7),                                    KC_RPRN,        KC_PLUS,        TD(DANCE_11),   KC_UP,          LSFT(KC_SCLN),  ST_MACRO_9,     
+    MEH_T(KC_TAB),  ST_MACRO_0,     ST_MACRO_1,     ST_MACRO_2,     ST_MACRO_3,     TD(DANCE_7),                                    KC_RPRN,        KC_PLUS,        TD(DANCE_11),   KC_UP,          LSFT(KC_SCLN),  ST_MACRO_9,     
     KC_LEFT_SHIFT,  KC_DELETE,      ST_MACRO_4,     ST_MACRO_5,     KC_HOME,        TD(DANCE_8),                                    KC_RCBR,        TD(DANCE_12),   KC_LEFT,        KC_DOWN,        KC_RIGHT,       TD(DANCE_13),   
     KC_LEFT_CTRL,   KC_LEFT_ALT,    ST_MACRO_6,     ST_MACRO_7,     ST_MACRO_8,     TD(DANCE_9),                                    TD(DANCE_14),   ST_MACRO_10,    ST_MACRO_11,    ST_MACRO_12,    ST_MACRO_13,    KC_ENTER,       
                                                     KC_TRANSPARENT, KC_NO,                                          KC_TRANSPARENT, KC_TRANSPARENT
@@ -109,7 +109,7 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
-    [1] = { {91,238,230}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {20,249,221}, {147,253,255}, {196,138,221}, {196,138,221}, {196,138,221}, {41,170,230}, {91,238,230}, {41,170,230}, {196,138,221}, {196,138,221}, {147,253,255}, {41,170,230}, {91,238,230}, {91,238,230}, {196,138,221}, {196,138,221}, {196,138,221}, {41,170,230}, {0,0,0}, {0,0,0}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {41,170,230}, {41,170,230}, {41,170,230}, {147,253,255}, {41,170,230}, {196,138,221}, {41,170,230}, {147,253,255}, {147,253,255}, {147,253,255}, {147,253,255}, {41,170,230}, {41,170,230}, {196,138,221}, {196,138,221}, {196,138,221}, {196,138,221}, {91,238,230}, {0,0,0}, {0,0,0} },
+    [1] = { {91,238,230}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {91,238,230}, {147,253,255}, {196,138,221}, {196,138,221}, {196,138,221}, {41,170,230}, {91,238,230}, {41,170,230}, {196,138,221}, {196,138,221}, {147,253,255}, {41,170,230}, {91,238,230}, {91,238,230}, {196,138,221}, {196,138,221}, {196,138,221}, {41,170,230}, {0,0,0}, {0,0,0}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {41,170,230}, {41,170,230}, {41,170,230}, {147,253,255}, {41,170,230}, {196,138,221}, {41,170,230}, {147,253,255}, {147,253,255}, {147,253,255}, {147,253,255}, {41,170,230}, {41,170,230}, {196,138,221}, {196,138,221}, {196,138,221}, {196,138,221}, {91,238,230}, {0,0,0}, {0,0,0} },
 
     [2] = { {20,249,221}, {20,249,221}, {20,249,221}, {168,255,255}, {20,249,221}, {20,249,221}, {20,249,221}, {0,0,255}, {41,255,255}, {41,255,255}, {251,255,147}, {0,0,255}, {91,238,230}, {147,253,255}, {147,253,255}, {251,255,147}, {86,242,141}, {0,0,255}, {91,238,230}, {91,238,230}, {147,253,255}, {147,253,255}, {0,0,255}, {251,255,147}, {41,170,230}, {0,0,0}, {20,249,221}, {0,0,0}, {41,170,230}, {41,170,230}, {41,170,230}, {41,170,230}, {41,170,230}, {0,0,0}, {251,242,255}, {251,242,255}, {251,242,255}, {41,170,230}, {41,170,230}, {0,0,0}, {251,242,255}, {251,242,255}, {251,242,255}, {41,170,230}, {0,0,0}, {251,242,255}, {251,242,255}, {251,242,255}, {251,242,255}, {91,238,230}, {0,0,0}, {0,0,0} },
 
@@ -180,7 +180,7 @@ bool is_mouse_record_user(uint16_t keycode, keyrecord_t* record) {
     return false;
   }
   else {
-    return false;
+    return true;
   }
 }
 
@@ -752,11 +752,11 @@ tap_dance_action_t tap_dance_actions[] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-  case QK_MODS ... QK_MODS_MAX: 
-    // Mouse keys with modifiers work inconsistently across operating systems, this makes sure that modifiers are always
-    // applied to the mouse key that was pressed.
-    if (IS_MOUSE_KEYCODE(QK_MODS_GET_BASIC_KEYCODE(keycode))) {
-    if (record->event.pressed) {
+  case QK_MODS ... QK_MODS_MAX:
+    // Mouse and consumer keys (volume, media) with modifiers work inconsistently across operating systems,
+    // this makes sure that modifiers are always applied to the key that was pressed.
+    if (IS_MOUSE_KEYCODE(QK_MODS_GET_BASIC_KEYCODE(keycode)) || IS_CONSUMER_KEYCODE(QK_MODS_GET_BASIC_KEYCODE(keycode))) {
+      if (record->event.pressed) {
         add_mods(QK_MODS_GET_MODS(keycode));
         send_keyboard_report();
         wait_ms(2);
