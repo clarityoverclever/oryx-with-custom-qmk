@@ -6,7 +6,7 @@
 #define LEADER_PER_KEY_TIMING
 
 #define USB_SUSPEND_WAKEUP_DELAY 0
-#define SERIAL_NUMBER "GeEm3/GGMrMR"
+#define SERIAL_NUMBER "GeEm3/7vOayo"
 #define LAYER_STATE_8BIT
 #define COMBO_COUNT 3
 
