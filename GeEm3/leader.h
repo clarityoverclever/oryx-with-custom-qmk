@@ -16,13 +16,12 @@ typedef enum {
     // Quick actions
     ACT_QUICK_KILL_CLEAR,
 	ACT_QUICK_SUDO_RERUN,
+    ACT_QUICK_@.COM
 
     // Git actions
-    ACT_GIT_COMMIT_FULL,
-    ACT_GIT_COMMIT_SHORT,
+    ACT_GIT_COMMIT,
 	ACT_GIT_FETCH,
     ACT_GIT_PULL,
-    ACT_GIT_PULL_REBASE,
     ACT_GIT_PUSH,
     ACT_GIT_STATUS,
     ACT_GIT_STASH_PUSH,
@@ -30,7 +29,6 @@ typedef enum {
     ACT_GIT_BRANCH,
     ACT_GIT_BRANCH_NEW,
     ACT_GIT_BRANCH_CHECKOUT,
-    ACT_GIT_INIT,
     ACT_GIT_ADD,
     ACT_GIT_LOG,
     ACT_GIT_DIFF,
@@ -45,7 +43,6 @@ typedef enum {
 
     // Code actions
 	ACT_CODE_GO_ERROR,
-	ACT_CODE_PS_CUSTOM_OBJ,
     ACT_CODE_PS_SET_PATH,
 
     // System actions

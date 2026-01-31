@@ -14,10 +14,7 @@ static leader_state_t leader_state = {
 // Lookup table for leader sequences
 static const leader_sequence_t leader_sequences[] = {
     // Three-key sequences
-    {KC_G, KC_C, KC_F, ACT_GIT_COMMIT_FULL,     "git commit\n"},
-    {KC_G, KC_C, KC_S, ACT_GIT_COMMIT_SHORT,    "git commit -m \"\""},
-    {KC_G, KC_P, KC_D, ACT_GIT_PULL,            "git pull\n"},
-	{KC_G, KC_P, KC_R, ACT_GIT_PULL_REBASE,     "git pull --rebase\n"},
+    {KC_G, KC_P, KC_D, ACT_GIT_PULL,            "git pull --rebase\n"},
     {KC_G, KC_P, KC_U, ACT_GIT_PUSH,            "git push\n"},
     {KC_G, KC_S, KC_T, ACT_GIT_STATUS,          "git status -sb\n"},
     {KC_G, KC_S, KC_I, ACT_GIT_STASH_PUSH,      "git stash push -m \"wip\"\n"},
@@ -34,7 +31,6 @@ static const leader_sequence_t leader_sequences[] = {
 	{KC_G, KC_R, KC_H, ACT_GIT_RESET,           "git reset --hard\n"},
 	{KC_G, KC_F, KC_C, ACT_GIT_FIND_CONFLICT,   "<<<<<<<"},
 
-    {KC_C, KC_P, KC_U, ACT_CODE_PS_CUSTOM_OBJ,  " = [PSCustomObject]@{\n}"},
 	{KC_C, KC_P, KC_S, ACT_CODE_PS_SET_PATH,    "$path = \"\""},
     {KC_C, KC_G, KC_E, ACT_CODE_GO_ERROR,       "if err != nil {\n}"},
 
@@ -49,7 +45,8 @@ static const leader_sequence_t leader_sequences[] = {
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
 	{KC_Q, KC_S, 0,    ACT_QUICK_SUDO_RERUN,    "sudo !!\n"},
-    {KC_G, KC_I, 0,    ACT_GIT_INIT,            "git init\n"},
+	{KC_Q, KC_E, 0,    ACT_QUICK_@.COM,         "@.com"},
+    {KC_G, KC_C, 0     ACT_GIT_COMMIT,          "git commit"},
     {KC_G, KC_A, 0,    ACT_GIT_ADD,             "git add .\n"},
     {KC_G, KC_L, 0,    ACT_GIT_LOG,             "git log --graph --oneline --decorate --all\n"},
     {KC_G, KC_F, 0,    ACT_GIT_FETCH,           "git fetch\n"},
@@ -93,14 +90,9 @@ void leader_end_logic(void) {
                 leader_state.second_key == seq->key2 &&
                 leader_state.third_key == seq->key3) {
                 // Special handling for sequences that need cursor positioning
-                if (seq->action == ACT_GIT_COMMIT_SHORT) {
+                if (seq->action == ACT_CODE_PS_SET_PATH) {
                     SEND_STRING(seq->output);
                     tap_code(KC_LEFT);
-                } else if (seq->action == ACT_CODE_PS_SET_PATH) {
-                    SEND_STRING(seq->output);
-                    tap_code(KC_LEFT);
-                } else if (seq->action == ACT_CODE_PS_CUSTOM_OBJ) {
-					SEND_STRING(seq->output);
 				} else if (seq->action == ACT_CODE_GO_ERROR) {
 					SEND_STRING(seq->output);
 					//for (int i = 0; i < 13; i++) { tap_code(KC_LEFT); }
@@ -125,6 +117,9 @@ void leader_end_logic(void) {
                 // Special handling for kill+clear
                 if (seq->action == ACT_QUICK_KILL_CLEAR) {
                     SEND_STRING(SS_LCTL("c") "clear\n");
+                } else if (seq->action == ACT_QUICK_@.COM) {
+                    SEND_STRING(seq->output);
+					for (int i = 0; i < 4; i++) { tap_code(KC_LEFT); }
                 } else {
                     SEND_STRING(seq->output);
                 }
@@ -175,6 +170,8 @@ void leader_visual_logic(void) {
             if (leader_state.first_key == KC_Q) { // Quick actions
                 rgb_matrix_set_color(7, 255, 0, 0);  // Q ctrl + c && clear
 				rgb_matrix_set_color(15, 15, 230, 44); // S sudo rerun
+				rgb_matrix_set_color(40, 15, 230, 44); // E @.com
+
             }
             else if (leader_state.first_key == KC_G) { // Git actions
                 rgb_matrix_set_color(17, 0, 23, 255); // G Blue (Selected)
@@ -184,7 +181,6 @@ void leader_visual_logic(void) {
                 rgb_matrix_set_color(10, 15, 230, 44); // P pull
                 rgb_matrix_set_color(21, 15, 230, 44); // C commit
                 rgb_matrix_set_color(13, 15, 230, 44); // A add
-                rgb_matrix_set_color(41, 15, 230, 44); // I init
                 rgb_matrix_set_color(33, 15, 230, 44); // L log
 				rgb_matrix_set_color(14, 15, 230, 44); // R rebase / restore / reset
                 rgb_matrix_set_color(9, 15, 230, 44);  // F fetch / find conflict
@@ -213,14 +209,7 @@ void leader_visual_logic(void) {
                     rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
                     rgb_matrix_set_color(34, 15, 230, 44); // U push
-                    rgb_matrix_set_color(22, 15, 230, 44); // D pull
-                    rgb_matrix_set_color(14, 15, 230, 44); // R pull rebase
-                }
-                else if (leader_state.second_key == KC_C) { // Commit
-                    rgb_matrix_set_color(21, 0, 23, 255); // C Blue (Selected)
-
-                    rgb_matrix_set_color(9, 15, 230, 44);  // F full
-                    rgb_matrix_set_color(15, 15, 230, 44); // S short
+                    rgb_matrix_set_color(22, 15, 230, 44); // D pull rebase
                 }
                 else if (leader_state.second_key == KC_B) { // Branch
                     rgb_matrix_set_color(11, 0, 23, 255); // B Blue (Selected)
@@ -263,7 +252,6 @@ void leader_visual_logic(void) {
                 if (leader_state.second_key == KC_P) { // Powershell
                     rgb_matrix_set_color(10, 0, 23, 255);  // P Blue (Selected)
 
-                    rgb_matrix_set_color(34, 15, 230, 44); // U PsCustomObject
 					rgb_matrix_set_color(15, 15, 230, 44); // S set $path
                 }
                 else if (leader_state.second_key == KC_G) { // Golang
