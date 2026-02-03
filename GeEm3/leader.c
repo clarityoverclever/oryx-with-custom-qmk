@@ -46,7 +46,7 @@ static const leader_sequence_t leader_sequences[] = {
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
 	{KC_Q, KC_S, 0,    ACT_QUICK_SUDO_RERUN,    "sudo !!\n"},
 	{KC_Q, KC_E, 0,    ACT_QUICK_EMAIL,         "@.com"},
-    {KC_G, KC_C, 0     ACT_GIT_COMMIT,          "git commit"},
+    {KC_G, KC_C, 0,    ACT_GIT_COMMIT,          "git commit"},
     {KC_G, KC_A, 0,    ACT_GIT_ADD,             "git add .\n"},
     {KC_G, KC_L, 0,    ACT_GIT_LOG,             "git log --graph --oneline --decorate --all\n"},
     {KC_G, KC_F, 0,    ACT_GIT_FETCH,           "git fetch\n"},
