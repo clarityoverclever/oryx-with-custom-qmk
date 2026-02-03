@@ -45,7 +45,7 @@ static const leader_sequence_t leader_sequences[] = {
     // Two-key sequences
     {KC_Q, KC_Q, 0,    ACT_QUICK_KILL_CLEAR,    NULL},  // Special handling
 	{KC_Q, KC_S, 0,    ACT_QUICK_SUDO_RERUN,    "sudo !!\n"},
-	{KC_Q, KC_E, 0,    ACT_QUICK_@.COM,         "@.com"},
+	{KC_Q, KC_E, 0,    ACT_QUICK_EMAIL,         "@.com"},
     {KC_G, KC_C, 0     ACT_GIT_COMMIT,          "git commit"},
     {KC_G, KC_A, 0,    ACT_GIT_ADD,             "git add .\n"},
     {KC_G, KC_L, 0,    ACT_GIT_LOG,             "git log --graph --oneline --decorate --all\n"},
@@ -117,7 +117,7 @@ void leader_end_logic(void) {
                 // Special handling for kill+clear
                 if (seq->action == ACT_QUICK_KILL_CLEAR) {
                     SEND_STRING(SS_LCTL("c") "clear\n");
-                } else if (seq->action == ACT_QUICK_@.COM) {
+                } else if (seq->action == ACT_QUICK_EMAIL) {
                     SEND_STRING(seq->output);
 					for (int i = 0; i < 4; i++) { tap_code(KC_LEFT); }
                 } else {
